@@ -1,5 +1,6 @@
 #FC = gfortran -O2 ## gfotran
-FC = ifort -O3 -xHOST ## gfotran
+#FC = ifort -O3 -xHOST ## gfotran
+FC = mpif90 -O2 ## gfotran
 
 LN = #other
 #LN = -llapack -lblas #other
@@ -13,7 +14,7 @@ OBJ_dir = $(addprefix object/,$(OBJ))
 
 PROG = two_band
 
-$(PROG):global_variables.o $(OBJ)
+$(PROG):mpi_mod.o global_variables.o global_variables_ms.o $(OBJ)
 	$(FC) -o $(PROG) $(OBJ_dir) $(LN)
 
 main.o:main.f90

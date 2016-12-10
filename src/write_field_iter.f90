@@ -18,7 +18,7 @@ subroutine write_field_iter(it)
     open(800,file=filename)
     do ix = Nx_L,Nx_R
       Et = -0.5d0*(Az_new(ix)-Az_old(ix))/dt
-      write(800,"(999e26.16e3)")xn(ix),Et,Az(it)
+      write(800,"(999e26.16e3)")xn(ix),Et,Az(ix)
     end do
     close(800)
 

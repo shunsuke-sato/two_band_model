@@ -11,5 +11,14 @@ module mpi_module
   include 'mpif.h'
   integer :: Myrank,Nprocs,ierr
 
-
+  contains
+    subroutine err_finalize(err_message)
+      implicit none
+      character(*),intent(in) :: err_message
+      if (Myrank == 0) then
+        write(*,*) err_message
+      endif
+      call MPI_FINALIZE(ierr)
+      stop
+    end subroutine err_finalize
 end module mpi_module

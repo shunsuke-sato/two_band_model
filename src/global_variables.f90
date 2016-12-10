@@ -6,6 +6,7 @@
 !-------10--------20--------30--------40--------50--------60--------70--------80--------90
 ! Two band model (3D)
 module global_variables
+  use mpi_module
 ! mathematical parameters
   real(8),parameter :: pi = 4d0*atan(1d0)
   complex(8),parameter :: zI = (0d0,1d0)

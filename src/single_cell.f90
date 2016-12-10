@@ -10,6 +10,10 @@ subroutine single_cell
   integer :: it,ikz,ikr
   real(8) :: jz_intra,jz_inter,Etz
 
+
+  if(Nprocs /= 1)call err_finalize("Parallelization is not supported &
+    for single-cell calculation.")
+
   read(*,*)kr_max,kz_max
   read(*,*)NKr, NKz
   read(*,*)Nt,dt

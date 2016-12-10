@@ -62,6 +62,9 @@ subroutine multi_scale
   end do
 
   if(Myrank == 0)close(20)
+
+  call write_results
+
   if(Myrank == 0) write(*,*)  'This calculation is shutdown successfully!'
   call MPI_FINALIZE(ierr)
 

@@ -4,7 +4,7 @@
 ! https://opensource.org/licenses/mit-license.php   !
 !---------------------------------------------------!
 !-------10--------20--------30--------40--------50--------60--------70--------80--------90
-subroutine write_results(it)
+subroutine write_results
   use global_variables_ms
   implicit none
   integer :: it,im

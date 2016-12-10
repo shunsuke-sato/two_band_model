@@ -59,6 +59,7 @@ subroutine multi_scale
     jz_store(it+1,Mx_s:Mx_e)=jz(Mx_s:Mx_e)
     Az_store(it+1,Mx_s:Mx_e)=Az_new(Mx_s:Mx_e)
     if(mod(it,1000) == 0)call write_field_iter(it)
+
   end do
 
   if(Myrank == 0)close(20)

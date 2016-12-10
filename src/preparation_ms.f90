@@ -47,9 +47,6 @@ subroutine preparation_ms
     end do
   end do
 
-  allocate(kz0(-NKz:NKz),kz(-NKz:NKz),kr(NKr))
-
-
   allocate(jz_store(0:Nt+1,Mx_s:Mx_e), Az_store(0:Nt+1,Mx_s:Mx_e))
 
   if(myrank == 0)write(*,"(A)")"== Preparation of the multi-scale calculation ends. =="  

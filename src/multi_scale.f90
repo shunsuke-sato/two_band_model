@@ -41,15 +41,24 @@ subroutine multi_scale
   call preparation_ms
   call input_Ac_ms
 
+  if(myrank == 0)then
+    open(20,file="Act_vac.out")
+    write(20,"(A)")"# Time (a.u.), Act (front surf.), Act (rear surf.)"
+    write(20,"(999e26.16e3)")0d0,Az_new(0),Az_new(Mx+1)
+  end if
+
   do it = 0,Nt
     write(*,*)'it=',it,'/',Nt
 
     call prop_elec_ms
     call current_ms
     call prop_Ac_ms
+    if(myrank == 0)write(20,"(999e26.16e3)")dt*(it+1),Az_new(0),Az_new(Mx+1)
 
+    if(mod(it,1000) == 0)call write_field_iter(it)
   end do
 
+  if(Myrank == 0)close(20)
   if(Myrank == 0) write(*,*)  'This calculation is shutdown successfully!'
   call MPI_FINALIZE(ierr)
 

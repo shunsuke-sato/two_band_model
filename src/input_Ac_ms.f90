@@ -13,6 +13,7 @@ subroutine input_Ac_ms
 
 !  allocate(Act(0:Nt+1),Act_dt2(0:Nt+1),jtz(0:Nt+1),jtz_intra(0:Nt+1),jtz_inter(0:Nt+1))
   allocate(xn(Nx_L:Nx_R), Az(Nx_L:Nx_R), Az_new(Nx_L:Nx_R), Az_old(Nx_L:Nx_R), jz(Mx))
+  Az_new = 0d0; Az = 0d0; Az_old = 0d0; jz = 0d0
   do ix = Nx_L,Nx_R
     xn(ix) = Hx*(dble(ix)-0.5d0)
   end do

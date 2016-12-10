@@ -40,6 +40,8 @@ subroutine multi_scale
 
   call preparation_ms
   call input_Ac_ms
+  jz_store(0,Mx_s:Mx_e)=0d0
+  Az_store(0,Mx_s:Mx_e)=Az_new(Mx_s:Mx_e)
 
   if(myrank == 0)then
     open(20,file="Act_vac.out")
@@ -54,7 +56,8 @@ subroutine multi_scale
     call current_ms
     call prop_Ac_ms
     if(myrank == 0)write(20,"(999e26.16e3)")dt*(it+1),Az_new(0),Az_new(Mx+1)
-
+    jz_store(it+1,Mx_s:Mx_e)=jz(Mx_s:Mx_e)
+    Az_store(it+1,Mx_s:Mx_e)=Az_new(Mx_s:Mx_e)
     if(mod(it,1000) == 0)call write_field_iter(it)
   end do
 

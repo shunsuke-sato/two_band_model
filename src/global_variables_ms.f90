@@ -36,6 +36,7 @@ module global_variables_ms
   integer :: Nx_L = -2000,Nx_R = 2000, Mx = 200
   real(8) :: Hx = 250d0
   real(8),allocatable :: xn(:), Az(:), Az_new(:), Az_old(:), jz(:)
+  real(8),allocatable :: jz_store(:,:), Az_store(:,:)
   integer :: Mx_s,Mx_e
 
 end module global_variables_ms

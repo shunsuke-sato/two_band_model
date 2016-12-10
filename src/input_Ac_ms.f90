@@ -7,10 +7,17 @@
 subroutine input_Ac_ms
   use global_variables_ms
   implicit none
-  integer :: it
-  real(8) :: tt
+  integer :: it,ix
+  real(8) :: Xstart
+  real(8) :: tt,xx
 
 !  allocate(Act(0:Nt+1),Act_dt2(0:Nt+1),jtz(0:Nt+1),jtz_intra(0:Nt+1),jtz_inter(0:Nt+1))
+  allocate(xn(Nx_L:Nx_R), Az(Nx_L:Nx_R), Az_new(Nx_L:Nx_R), Az_old(Nx_L:Nx_R), jz(Mx))
+  do ix = Nx_L,Nx_R
+    xn(ix) = Hx*(dble(ix)-0.5d0)
+  end do
+
+
 
   E0_1=5.338d-9*sqrt(Iwcm2_1)
   omega_1 = omega_ev_1/(2d0*Ry)
@@ -20,8 +27,37 @@ subroutine input_Ac_ms
   tpulse_2 = tpulse_fs_2/0.02418d0
   Tdelay = Tdelay_fs/0.02418d0
 
+  Xstart=5*Hx
 
-  
+  do ix=NX_L,0
+    xx=xn(ix)
+    if(xx > -Xstart-tpulse_1*c_light .and. xx < -Xstart) then
+      Az(ix)=-E0_1/omega_1*sin(pi*(xx+Xstart+tpulse_1*c_light)/(tpulse_1*c_light))**2 &
+        *cos(omega_1*(xx+Xstart+tpulse_1*c_light)/c_light)
+    endif
+    
+    if(xx > -Xstart-(tpulse_1+Tdelay)*c_light .and. &
+      xx < -Xstart-(tpulse_1+Tdelay-tpulse_2)*c_light ) then
+           
+      Az(ix)=Az(ix)-E0_2/omega_2*sin(pi*(xx+Xstart+(tpulse_1+Tdelay)*c_light) &
+        /(tpulse_2*c_light))**2 &
+        *cos(omega_2*(xx+Xstart+(tpulse_1+Tdelay)*c_light)/c_light)
+    endif
 
+         
+    xx=xx-dt*c_light
+    if(xx > -Xstart-tpulse_1*c_light+dt*c_light .and. xx < -Xstart+dt*c_light) then
+      Az_new(ix)=-E0_1/omega_1*sin(pi*(xx+Xstart+tpulse_1*c_light)/(tpulse_1*c_light))**2 &
+        *cos(omega_1*(xx+Xstart+tpulse_1*c_light)/c_light)
+    end if
+         
+    if(xx > -Xstart-(tpulse_1+Tdelay)*c_light+dt*c_light &
+      .and. xx < -Xstart-(tpulse_1+Tdelay-tpulse_2)*c_light+dt*c_light ) then
+      Az_new(ix)=Az_new(ix)-E0_2/omega_2*sin(pi*(xx+Xstart+(tpulse_1+Tdelay)*c_light)&
+        /(tpulse_2*c_light))**2 &
+        *cos(omega_2*(xx+Xstart+(tpulse_1+Tdelay)*c_light)/c_light)
+    end if
+
+  end do
   return
 end subroutine input_Ac_ms

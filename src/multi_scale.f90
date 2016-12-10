@@ -38,7 +38,7 @@ subroutine multi_scale
   call MPI_BCAST(Hx,1,MPI_REAL8,0,MPI_COMM_WORLD,ierr)  
 
   call preparation_ms
-!  call input_Ac
+  call input_Ac_ms
 !
 !
 !

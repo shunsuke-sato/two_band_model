@@ -12,6 +12,7 @@ module global_variables_ms
   real(8),parameter :: pi = 4d0*atan(1d0)
   complex(8),parameter :: zI = (0d0,1d0)
   real(8),parameter :: a_B=0.529177d0,Ry=13.6058d0
+  real(8),parameter :: c_light=137.03953250d0 
 
 ! Material parameter
   integer :: NKr,NKz

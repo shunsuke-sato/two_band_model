@@ -1,4 +1,4 @@
-# PANDA: PArabolic two-band model for Nonlinear Dynamcis of electrons And fields
+# PANDA: PArabolic two-band model for Nonlinear Dynamics of electrons And fields
 
 - [Overview](#overview)
 - [License](#license)

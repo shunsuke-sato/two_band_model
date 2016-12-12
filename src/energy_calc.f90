@@ -28,7 +28,8 @@ subroutine energy_calc(Eelec,Eelemag,Etot)
     Bt = -0.5d0*(Az(ix+1)-Az(ix-1))*c_light/Hx
     Eelemag = Eelemag + (Et**2+Bt**2)
   end do
-
+  
+  Etot = Eelec + Eelemag
 !!== Unit should be consistent between Eelec and Eelemag ==!!
 
 end subroutine energy_calc

@@ -1,4 +1,5 @@
 FC = mpif90 -O2 ## gfotran
+#FC = mpiifort -O3 -xHOST -ipo -ip ## intel
 
 LN = ##
 

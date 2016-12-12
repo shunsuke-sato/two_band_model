@@ -1,18 +1,13 @@
-#FC = gfortran -O2 ## gfotran
-#FC = ifort -O3 -xHOST ## gfotran
 FC = mpif90 -O2 ## gfotran
 
-LN = #other
-#LN = -llapack -lblas #other
-
-
+LN = ##
 
 VPATH = src:object
 SRC = $(shell cd src ;ls *.f90 ;cd ..)
 OBJ = $(SRC:.f90=.o)
 OBJ_dir = $(addprefix object/,$(OBJ))
 
-PROG = two_band
+PROG = panda
 
 $(PROG):mpi_mod.o global_variables.o global_variables_ms.o $(OBJ)
 	$(FC) -o $(PROG) $(OBJ_dir) $(LN)
@@ -24,6 +19,6 @@ main.o:main.f90
 
 
 clean:
-	rm  -f  object/*.o  *.mod two_band
+	rm  -f  object/*.o  *.mod panda
 clean_complete:
-	rm  -f *~  */*~ */*/*~ object/*.o  */*.mod *.mod two_band */#* *.out log.log
+	rm  -f *~  */*~ */*/*~ object/*.o  */*.mod *.mod panda */#* *.out *.log

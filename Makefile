@@ -1,5 +1,6 @@
 FC = mpif90 -O2 ## gfotran
 #FC = mpiifort -O3 -xHOST -ipo -ip ## intel
+#FC = mpifrtpx -O3 -Kfast ##FX100@Nagoya
 
 LN = ##
 

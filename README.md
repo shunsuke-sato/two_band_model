@@ -1,13 +1,14 @@
-# PANDA: PArabolic two-band model for Nonlinear Dynamics of electrons And fields
+# PANDA: Parabolic two-band model Analyzer for Nonlinear electron Dynamics in Attosecond phenomena
 
 - [Overview](#overview)
 - [License](#license)
 
 ## Overview
 
-PANDA is an open-source computer program for calculations of electron dynamics
-and light-matter interactions. It is based on a parabolic two-band model
-for electron dynamics and the Maxwell equation for field propagation.
+PANDA (Parabolic two-band model Analyzer for Nonlinear electron Dynamics in 
+Attosecond phenomena) is an open-source computer program for calculations of 
+electron dynamics and light-matter interactions. It is based on a parabolic 
+two-band model for electron structure and dynamics.
 
 ## License
 

@@ -2,7 +2,9 @@
 2d0 2d0   ! kr_max,kz_max
 256  256    ! NKr, NKz
 30000 0.16d0   ! NT, dt
+"cos2cos"
 3d12 1.55d0  20d0 ! E0_1,omega_ev_1,tpulse_fs_1
+"cos2cos"
 0d10 40d0  0.5d0 ! E0_1,omega_ev_1,tpulse_fs_1
 0.0d0             ! Tdelay_fs
 -2000 2000 102

@@ -69,43 +69,43 @@ subroutine input_Ac_ms
   case("cos4cos")
      do ix=NX_L,0
         xx=xn(ix)
-        if(xx > -Xstart-(tpulse_1+Tdelay)*c_light .and. &
-             xx < -Xstart-(tpulse_1+Tdelay-tpulse_2)*c_light ) then
-           Az(ix)=Az(ix)-E0_2/omega_2*sin(pi*(xx+Xstart+(tpulse_1+Tdelay)*c_light) &
+        if(xx > -Xstart-(tpulse_1*0.5d0+Tdelay)*c_light .and. &
+             xx < -Xstart-(tpulse_1*0.5d0+Tdelay-tpulse_2)*c_light ) then
+           Az(ix)=Az(ix)-E0_2/omega_2*sin(pi*(xx+Xstart+(tpulse_1*0.5d0+Tdelay)*c_light) &
                 /(tpulse_2*c_light))**4 &
-                *cos(omega_2*(xx+Xstart+(tpulse_1+Tdelay)*c_light)/c_light)
+                *cos(omega_2*(xx+Xstart+(tpulse_1*0.5d0+Tdelay)*c_light)/c_light)
         endif
 
          
         xx=xx-dt*c_light
-        if(xx > -Xstart-(tpulse_1+Tdelay)*c_light+dt*c_light &
-             .and. xx < -Xstart-(tpulse_1+Tdelay-tpulse_2)*c_light+dt*c_light ) then
-           Az_new(ix)=Az_new(ix)-E0_2/omega_2*sin(pi*(xx+Xstart+(tpulse_1+Tdelay)*c_light)&
+        if(xx > -Xstart-(tpulse_1*0.5d0+Tdelay)*c_light+dt*c_light &
+             .and. xx < -Xstart-(tpulse_1*0.5d0+Tdelay-tpulse_2)*c_light+dt*c_light ) then
+           Az_new(ix)=Az_new(ix)-E0_2/omega_2*sin(pi*(xx+Xstart+(tpulse_1*0.5d0+Tdelay)*c_light)&
                 /(tpulse_2*c_light))**4 &
-                *cos(omega_2*(xx+Xstart+(tpulse_1+Tdelay)*c_light)/c_light)
+                *cos(omega_2*(xx+Xstart+(tpulse_1*0.5d0+Tdelay)*c_light)/c_light)
         end if
      end do
   case("cos2cos")
      do ix=NX_L,0
         xx=xn(ix)
-        if(xx > -Xstart-(tpulse_1+Tdelay)*c_light .and. &
-             xx < -Xstart-(tpulse_1+Tdelay-tpulse_2)*c_light ) then
-           Az(ix)=Az(ix)-E0_2/omega_2*sin(pi*(xx+Xstart+(tpulse_1+Tdelay)*c_light) &
+        if(xx > -Xstart-(tpulse_1*0.5d0+Tdelay)*c_light .and. &
+             xx < -Xstart-(tpulse_1*0.5d0+Tdelay-tpulse_2)*c_light ) then
+           Az(ix)=Az(ix)-E0_2/omega_2*sin(pi*(xx+Xstart+(tpulse_1*0.5d0+Tdelay)*c_light) &
                 /(tpulse_2*c_light))**2 &
-                *cos(omega_2*(xx+Xstart+(tpulse_1+Tdelay)*c_light)/c_light)
+                *cos(omega_2*(xx+Xstart+(tpulse_1*0.5d0+Tdelay)*c_light)/c_light)
         endif
 
          
         xx=xx-dt*c_light
-        if(xx > -Xstart-(tpulse_1+Tdelay)*c_light+dt*c_light &
-             .and. xx < -Xstart-(tpulse_1+Tdelay-tpulse_2)*c_light+dt*c_light ) then
-           Az_new(ix)=Az_new(ix)-E0_2/omega_2*sin(pi*(xx+Xstart+(tpulse_1+Tdelay)*c_light)&
+        if(xx > -Xstart-(tpulse_1*0.5d0+Tdelay)*c_light+dt*c_light &
+             .and. xx < -Xstart-(tpulse_1*0.5d0+Tdelay-tpulse_2)*c_light+dt*c_light ) then
+           Az_new(ix)=Az_new(ix)-E0_2/omega_2*sin(pi*(xx+Xstart+(tpulse_1*0.5d0+Tdelay)*c_light)&
                 /(tpulse_2*c_light))**2 &
-                *cos(omega_2*(xx+Xstart+(tpulse_1+Tdelay)*c_light)/c_light)
+                *cos(omega_2*(xx+Xstart+(tpulse_1*0.5d0+Tdelay)*c_light)/c_light)
         end if
      end do
   case default
-     stop "Invalid envelope_1"
+     stop "Invalid envelope_2"
   end select
 
   return

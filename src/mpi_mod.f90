@@ -10,6 +10,8 @@ module mpi_module
 ! MPI
   include 'mpif.h'
   integer :: Myrank,Nprocs,ierr
+  real(8) :: Time_start,Time_now
+
 
   contains
     subroutine err_finalize(err_message)

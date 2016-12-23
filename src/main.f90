@@ -12,6 +12,7 @@ program main
   call MPI_init(ierr)
   call MPI_COMM_SIZE(MPI_COMM_WORLD,Nprocs,ierr)
   call MPI_COMM_RANK(MPI_COMM_WORLD,Myrank,ierr)
+  Time_start=MPI_WTIME()
 
   if(myrank == 0)read(*,*)calc_mode
   call MPI_BCAST(calc_mode,50,MPI_CHARACTER,0,MPI_COMM_WORLD,ierr)  
@@ -26,5 +27,7 @@ program main
     stop
   end select
       
+  Time_now=MPI_WTIME()
+  if (Myrank == 0 ) write(*,"(A,2x,e16.6e3,A)") 'Total time =',(Time_now-Time_start),'sec'
 
 end program main

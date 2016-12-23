@@ -21,35 +21,95 @@ subroutine input_Ac
   Tdelay = Tdelay_fs/0.02418d0
 
   Act = 0d0
-  do it = 0,Nt+1
-    tt = dt*dble(it)
 
-    if(abs(tt-0.5d0*tpulse_1) < 0.5d0*tpulse_1)then
-      Act(it) = -(E0_1/omega_1)*cos(pi*(tt-0.5d0*tpulse_1)/tpulse_1)**4 &
-        *sin(omega_1*(tt-0.5d0*tpulse_1))
-    end if
-    if(abs(tt-0.5d0*tpulse_1-Tdelay) < 0.5d0*tpulse_2)then
-      Act(it) = Act(it) -(E0_2/omega_2) &
-        *cos(pi*(tt-0.5d0*tpulse_1-Tdelay)/tpulse_2)**4 &
-        *sin(omega_2*(tt-0.5d0*tpulse_1-Tdelay))
-    end if
-  end do
+!Pump
+  select case(envelope_1)
+  case("cos4cos")
+    do it = 0,Nt+1
+      tt = dt*dble(it)
+      if(abs(tt-0.5d0*tpulse_1) < 0.5d0*tpulse_1)then
+        Act(it) = -(E0_1/omega_1)*cos(pi*(tt-0.5d0*tpulse_1)/tpulse_1)**4 &
+          *sin(omega_1*(tt-0.5d0*tpulse_1))
+      end if
+    end do
 
-  Act_dt2 = 0d0
-  do it = 0,Nt+1
-    tt = dt*dble(it) + 0.5d0*dt
+    Act_dt2 = 0d0
+    do it = 0,Nt+1
+      tt = dt*dble(it) + 0.5d0*dt
+      if(abs(tt-0.5d0*tpulse_1) < 0.5d0*tpulse_1)then
+        Act_dt2(it) = -(E0_1/omega_1)*cos(pi*(tt-0.5d0*tpulse_1)/tpulse_1)**4 &
+          *sin(omega_1*(tt-0.5d0*tpulse_1))
+      end if
+    end do
+  case("cos2cos")
+    do it = 0,Nt+1
+      tt = dt*dble(it)
+      if(abs(tt-0.5d0*tpulse_1) < 0.5d0*tpulse_1)then
+        Act(it) = -(E0_1/omega_1)*cos(pi*(tt-0.5d0*tpulse_1)/tpulse_1)**2 &
+          *sin(omega_1*(tt-0.5d0*tpulse_1))
+      end if
+    end do
 
-    if(abs(tt-0.5d0*tpulse_1) < 0.5d0*tpulse_1)then
-      Act_dt2(it) = -(E0_1/omega_1)*cos(pi*(tt-0.5d0*tpulse_1)/tpulse_1)**4 &
-        *sin(omega_1*(tt-0.5d0*tpulse_1))
-    end if
-    if(abs(tt-0.5d0*tpulse_1-Tdelay) < 0.5d0*tpulse_2)then
-      Act_dt2(it) = Act_dt2(it) -(E0_2/omega_2) &
-        *cos(pi*(tt-0.5d0*tpulse_1-Tdelay)/tpulse_2)**4 &
-        *sin(omega_2*(tt-0.5d0*tpulse_1-Tdelay))
-    end if
-  end do
-  
+    Act_dt2 = 0d0
+    do it = 0,Nt+1
+      tt = dt*dble(it) + 0.5d0*dt
+      if(abs(tt-0.5d0*tpulse_1) < 0.5d0*tpulse_1)then
+        Act_dt2(it) = -(E0_1/omega_1)*cos(pi*(tt-0.5d0*tpulse_1)/tpulse_1)**2 &
+          *sin(omega_1*(tt-0.5d0*tpulse_1))
+      end if
+    end do
+  case default
+    stop "Invalid envelope_1"
+  end select
+
+!Probe
+  select case(envelope_2)
+  case("cos4cos")
+    do it = 0,Nt+1
+      tt = dt*dble(it)
+
+      if(abs(tt-0.5d0*tpulse_1-Tdelay) < 0.5d0*tpulse_2)then
+        Act(it) = Act(it) -(E0_2/omega_2) &
+          *cos(pi*(tt-0.5d0*tpulse_1-Tdelay)/tpulse_2)**4 &
+          *sin(omega_2*(tt-0.5d0*tpulse_1-Tdelay))
+      end if
+    end do
+
+    Act_dt2 = 0d0
+    do it = 0,Nt+1
+      tt = dt*dble(it) + 0.5d0*dt
+
+      if(abs(tt-0.5d0*tpulse_1-Tdelay) < 0.5d0*tpulse_2)then
+        Act_dt2(it) = Act_dt2(it) -(E0_2/omega_2) &
+          *cos(pi*(tt-0.5d0*tpulse_1-Tdelay)/tpulse_2)**4 &
+          *sin(omega_2*(tt-0.5d0*tpulse_1-Tdelay))
+      end if
+    end do
+  case("cos2cos")  
+    do it = 0,Nt+1
+      tt = dt*dble(it)
+
+      if(abs(tt-0.5d0*tpulse_1-Tdelay) < 0.5d0*tpulse_2)then
+        Act(it) = Act(it) -(E0_2/omega_2) &
+          *cos(pi*(tt-0.5d0*tpulse_1-Tdelay)/tpulse_2)**4 &
+          *sin(omega_2*(tt-0.5d0*tpulse_1-Tdelay))
+      end if
+    end do
+
+    Act_dt2 = 0d0
+    do it = 0,Nt+1
+      tt = dt*dble(it) + 0.5d0*dt
+
+      if(abs(tt-0.5d0*tpulse_1-Tdelay) < 0.5d0*tpulse_2)then
+        Act_dt2(it) = Act_dt2(it) -(E0_2/omega_2) &
+          *cos(pi*(tt-0.5d0*tpulse_1-Tdelay)/tpulse_2)**4 &
+          *sin(omega_2*(tt-0.5d0*tpulse_1-Tdelay))
+      end if
+    end do
+  case default
+    stop "Invalid envelope_1"
+  end select
+
 
   return
 end subroutine input_Ac

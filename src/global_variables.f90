@@ -24,6 +24,7 @@ module global_variables
   real(8),allocatable :: deps_int(:,:),deps(:,:)
   complex(8),allocatable :: zCt(:,:,:)
   real(8),allocatable :: Act(:),Act_dt2(:),jtz(:),jtz_intra(:),jtz_inter(:)
+  character(20) :: envelope_1,envelope_2
 
 ! Laser parameters
   real(8) :: E0_1,omega_1,tpulse_1,omega_ev_1,tpulse_fs_1,Iwcm2_1

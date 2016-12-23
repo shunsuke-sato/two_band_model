@@ -65,7 +65,7 @@ subroutine input_Ac_ms
   end select
 
 ! Probe
-  select case(envelope_1)
+  select case(envelope_2)
   case("cos4cos")
      do ix=NX_L,0
         xx=xn(ix)

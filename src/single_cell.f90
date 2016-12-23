@@ -36,12 +36,15 @@ subroutine single_cell
 
 !=== deps_int, deps ====
     deps_int = deps_int + 0.5d0*(dt*0.5d0)*deps
+!$omp parallel
+!$omp do private(ikz, ikr)
     do ikz = -NKz,NKz
       kz(ikz) = kz0(ikz) + Act_dt2(it)
       do ikr = 1,NKr
         deps(ikr,ikz) = eps_g + 0.5d0/mass_r*(kr(ikr)**2+kz(ikz)**2)
       end do
     end do
+!$omp end parallel
     deps_int = deps_int + 0.5d0*(dt*0.5d0)*deps
 !=== deps_int, deps ====
 
@@ -50,12 +53,15 @@ subroutine single_cell
 
 !=== deps_int, deps ====
     deps_int = deps_int + 0.5d0*(dt*0.5d0)*deps
+!$omp parallel
+!$omp do private(ikz, ikr)
     do ikz = -NKz,NKz
       kz(ikz) = kz0(ikz) + Act(it+1)
       do ikr = 1,NKr
         deps(ikr,ikz) = eps_g + 0.5d0/mass_r*(kr(ikr)**2+kz(ikz)**2)
       end do
     end do
+!$omp end parallel
     deps_int = deps_int + 0.5d0*(dt*0.5d0)*deps
 !=== deps_int, deps ====
 

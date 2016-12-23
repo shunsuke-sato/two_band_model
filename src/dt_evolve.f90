@@ -13,6 +13,8 @@ subroutine dt_evolve(Etz) ! Now coding
   integer :: ikr,ikz
   complex(8) :: zeig_vec_p(2), zeig_vec_m(2)
 
+!$omp parallel
+!$omp do private(ikz, ikr,lambda,theta_p,theta_m,zeig_vec_p,zeig_vec_m,eps_p,eps_m,zsp,zsm)
   do ikz = -NKz,NKz
   do ikr = 1,NKr
 
@@ -32,7 +34,7 @@ subroutine dt_evolve(Etz) ! Now coding
 
   end do
   end do
-
+!$omp end parallel
 
   return
 end subroutine dt_evolve

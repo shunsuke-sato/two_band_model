@@ -9,7 +9,12 @@ subroutine single_cell
   implicit none
   integer :: it,ikz,ikr
   real(8) :: jz_intra,jz_inter,Etz
-
+  integer :: it_delay
+  integer,parameter :: Ndelay = 30
+  real(8),parameter :: Tdelay_fs_ini=-3d0,Tdelay_fs_fin=3d0
+  real(8),parameter :: dTdelay_fs = (Tdelay_fs_fin-Tdelay_fs_ini)/dble(Ndelay)
+  real(8) :: Iwcm2_1_t,Iwcm2_2_t
+  character(50) :: citer,filename
 
   if(Nprocs /= 1)call err_finalize("Parallelization is not supported &
     for single-cell calculation.")
@@ -23,13 +28,33 @@ subroutine single_cell
   read(*,*)Iwcm2_2,omega_ev_2,tpulse_fs_2
   read(*,*)Tdelay_fs
 
+  Iwcm2_1_t=Iwcm2_1
+  Iwcm2_2_t=Iwcm2_2
+
+
+  do it_delay = -2,Ndelay
+    write(*,*)'it_delay=',it_delay,'/',Ndelay
+     if(it_delay == -2)then ! Pump only
+        Iwcm2_1=Iwcm2_1_t
+        Iwcm2_2=0d0
+        Tdelay_fs = 0d0
+     else if(it_delay == -1)then ! Probe only
+        Iwcm2_1=0d0
+        Iwcm2_2=Iwcm2_2_t
+        Tdelay_fs = 0d0
+     else ! Pump-probe
+        Iwcm2_1=Iwcm2_1_t
+        Iwcm2_2=Iwcm2_2_t
+        Tdelay_fs = Tdelay_fs_ini + dTdelay_fs*dble(it_delay)
+     end if
+
+
+
   call preparation
   call input_Ac
 
-
-
   do it = 0,Nt
-    write(*,*)'it=',it,'/',Nt
+!    write(*,*)'it=',it,'/',Nt
     call current(jz_intra,jz_inter)
     jtz_intra(it) = jz_intra; jtz_inter(it) = jz_inter
     jtz(it) = jtz_intra(it) + jtz_inter(it)
@@ -66,11 +91,33 @@ subroutine single_cell
 !=== deps_int, deps ====
 
   end do
-  
-  open(21,file='Act_jtz.out')
-  do it = 0,Nt
-    write(21,'(999e26.16e3)')dt*dble(it),Act(it),jtz(it),jtz_intra(it),jtz_inter(it),Act_dt2(it)
-  end do
-  close(21)
 
+
+  if(it_delay == -2)then
+     open(21,file='Pump_only_Act_jtz.out')
+     do it = 0,Nt
+        write(21,'(999e26.16e3)')dt*dble(it),Act(it),jtz(it),jtz_intra(it),jtz_inter(it),Act_dt2(it)
+     end do
+     close(21)
+  else if(it_delay == -1)then
+     open(21,file='Probe_only_Act_jtz.out')
+     do it = 0,Nt
+        write(21,'(999e26.16e3)')dt*dble(it),Act(it),jtz(it),jtz_intra(it),jtz_inter(it),Act_dt2(it)
+     end do
+     close(21)
+  else
+     write(citer,"(I3.3)")it_delay
+     filename=trim(citer)//"_Act_jtz.out"
+     open(21,file=filename)
+     do it = 0,Nt
+        write(21,'(999e26.16e3)')dt*dble(it),Act(it),jtz(it),jtz_intra(it),jtz_inter(it),Act_dt2(it)
+     end do
+     close(21)
+  end if
+
+  deallocate(zCt,deps,deps_int)
+  deallocate(kz0,kz,kr)
+  deallocate(Act,Act_dt2,jtz,jtz_intra,jtz_inter)
+
+  end do
 end subroutine single_cell

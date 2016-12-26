@@ -54,7 +54,7 @@ subroutine multi_scale
   end if
 
   do it = 0,Nt
-    write(*,*)'it=',it,'/',Nt
+    if(myrank == 0)write(*,*)'it=',it,'/',Nt
 
     call prop_elec_ms
     call current_ms

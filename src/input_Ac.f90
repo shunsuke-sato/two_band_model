@@ -22,8 +22,8 @@ subroutine input_Ac
   Tdelay = Tdelay_fs/0.02418d0
 
 !
-  Es = piz_vc**2/eps_g**3
-  Up = 1d0/(4d0*mass_r*omega_1**2)
+  Es = piz_vc**2*E0_1**2/eps_g**3
+  Up = E0_1**2/(4d0*mass_r*omega_1**2)
   alpha = (Es+Up)/eps_g
 
   write(*,"(A,2x,999e26.16e3)")"Stark shift, Es=",Es

@@ -15,7 +15,7 @@ subroutine energy(Eex)
 !$omp do private(ikz, ikr) reduction(+:Eex)
   do ikz = -NKz,NKz
   do ikr = 1,NKr
-    Eex = Eex+ kz(ikz)*abs(zCt(2,ikr,ikz))**2*kr(ikr)*deps(ikr,ikz)
+    Eex = Eex+ deps(ikr,ikz)*abs(zCt(2,ikr,ikz))**2*kr(ikr)
   end do
   end do
 !$omp end parallel

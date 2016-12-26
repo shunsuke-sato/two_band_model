@@ -8,7 +8,7 @@ subroutine single_cell
   use global_variables
   implicit none
   integer :: it,ikz,ikr
-  real(8) :: jz_intra,jz_inter,Etz
+  real(8) :: jz_intra,jz_inter,Etz,Eex
 
 
   if(Nprocs /= 1)call err_finalize("Parallelization is not supported &
@@ -26,13 +26,18 @@ subroutine single_cell
   call preparation
   call input_Ac
 
-
+  open(21,file="Eex.out")
 
   do it = 0,Nt
     write(*,*)'it=',it,'/',Nt
     call current(jz_intra,jz_inter)
     jtz_intra(it) = jz_intra; jtz_inter(it) = jz_inter
     jtz(it) = jtz_intra(it) + jtz_inter(it)
+
+    if(mod(it,100) == 0 .or. it == Nt)then
+       call energy(Eex)
+       write(21,"(999e26.16e3)")dt*it,Eex
+    end if
 
 !=== deps_int, deps ====
     deps_int = deps_int + 0.5d0*(dt*0.5d0)*deps
@@ -66,7 +71,8 @@ subroutine single_cell
 !=== deps_int, deps ====
 
   end do
-  
+
+  close(21)
   open(21,file='Act_jtz.out')
   do it = 0,Nt
     write(21,'(999e26.16e3)')dt*dble(it),Act(it),jtz(it),jtz_intra(it),jtz_inter(it),Act_dt2(it)

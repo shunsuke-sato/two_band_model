@@ -9,6 +9,7 @@ subroutine input_Ac
   implicit none
   integer :: it
   real(8) :: tt
+  real(8) :: Es,Up,alpha
 
   allocate(Act(0:Nt+1),Act_dt2(0:Nt+1),jtz(0:Nt+1),jtz_intra(0:Nt+1),jtz_inter(0:Nt+1))
 
@@ -19,6 +20,19 @@ subroutine input_Ac
   omega_2 = omega_ev_2/(2d0*Ry)
   tpulse_2 = tpulse_fs_2/0.02418d0
   Tdelay = Tdelay_fs/0.02418d0
+
+!
+  Es = piz_vc**2/eps_g**3
+  Up = 1d0/(4d0*mass_r*omega_1**2)
+  alpha = (Es+Up)/eps_g
+
+  write(*,"(A,2x,999e26.16e3)")"Stark shift, Es=",Es
+  write(*,"(A,2x,999e26.16e3)")"Ponderomotive energy, Up=",Up
+  write(*,"(A,2x,999e26.16e3)")"(Es+Up)/Eg=",(Es+Up)/eps_g
+  write(*,"(A,2x,999e26.16e3)")"Es/Up=",Es/Up
+  write(*,"(A,2x,999e26.16e3)")"E0_1=",E0_1
+  write(*,"(A,2x,999e26.16e3)")"E0_2=",E0_2
+
 
   Act = 0d0
 

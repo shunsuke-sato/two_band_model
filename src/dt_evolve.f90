@@ -30,7 +30,7 @@ subroutine dt_evolve(it) ! Now coding
 !=== deps_int, deps ====
   
   
-!$omp do private(ikz,ikr,alpha,lambda_v,lambda_c,zx,zy,ss,zeig_vec_v,zeig_vec_c,Etz0)
+!$omp do private(ikz,ikr,alpha,lambda_v,lambda_c,zx,zy,ss,zeig_vec_v,zeig_vec_c)
   do ikz = -NKz,NKz
   do ikr = 1,NKr
 
@@ -70,7 +70,7 @@ subroutine dt_evolve(it) ! Now coding
 !=== deps_int, deps ====
   
   
-!$omp do private(ikz,ikr,alpha,lambda_v,lambda_c,zx,zy,ss,zeig_vec_v,zeig_vec_c,Etz1)
+!$omp do private(ikz,ikr,alpha,lambda_v,lambda_c,zx,zy,ss,zeig_vec_v,zeig_vec_c)
   do ikz = -NKz,NKz
   do ikr = 1,NKr
 

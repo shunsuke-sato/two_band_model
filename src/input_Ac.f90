@@ -4,12 +4,14 @@
 ! https://opensource.org/licenses/mit-license.php   !
 !---------------------------------------------------!
 !-------10--------20--------30--------40--------50--------60--------70--------80--------90
-subroutine input_Ac
+subroutine input_Ac(fact1,fact2)
   use global_variables
   implicit none
+  real(8), intent(in) :: fact1,fact2
   integer :: it
   real(8) :: tt
   real(8) :: Es,Up,alpha
+  real(8),parameter ::  gamma = 1d0
 
   allocate(Act(-1:Nt+2),jtz(0:Nt+1),jtz_intra(0:Nt+1),jtz_inter(0:Nt+1))
 
@@ -22,9 +24,15 @@ subroutine input_Ac
   Tdelay = Tdelay_fs/0.02418d0
 
 !
+  Es = piz_vc**2/eps_g**3
+  Up = 1d0/(4d0*mass_r*omega_1**2)
+  alpha = (Es+Up)/eps_g
+  E0_1 = sqrt(gamma/alpha)
   Es = piz_vc**2*E0_1**2/eps_g**3
   Up = E0_1**2/(4d0*mass_r*omega_1**2)
-  alpha = (Es+Up)/eps_g
+  E0_2 = E0_1*1d-2
+  E0_1 = E0_1*fact1
+  E0_2 = E0_2*fact2
 
   write(*,"(A,2x,999e26.16e3)")"Stark shift, Es=",Es
   write(*,"(A,2x,999e26.16e3)")"Ponderomotive energy, Up=",Up

@@ -35,23 +35,27 @@ subroutine single_cell
 
   do it_delay = -2,Ndelay
     write(*,*)'it_delay=',it_delay,'/',Ndelay
+    call preparation
      if(it_delay == -2)then ! Pump only
         Iwcm2_1=Iwcm2_1_t
         Iwcm2_2=0d0
+        call input_Ac(1d0,0d0)
         Tdelay_fs = 0d0
      else if(it_delay == -1)then ! Probe only
         Iwcm2_1=0d0
         Iwcm2_2=Iwcm2_2_t
+        call input_Ac(0d0,1d0)
         Tdelay_fs = 0d0
      else ! Pump-probe
         Iwcm2_1=Iwcm2_1_t
         Iwcm2_2=Iwcm2_2_t
+        call input_Ac(1d0,1d0)
         Tdelay_fs = Tdelay_fs_ini + dTdelay_fs*dble(it_delay)
      end if
 
 
-  call preparation
-  call input_Ac
+
+
 
   open(21,file="Eex.out")
 

@@ -14,12 +14,11 @@ subroutine current(jz_intra,jz_inter)
   jz_intra = 0d0
   jz_inter = 0d0
 !$omp parallel
-!$omp do private(ikz, ikr, zfact) reduction(+:jz_intra,jz_inter)
+!$omp do private(ikz, ikr) reduction(+:jz_intra,jz_inter)
   do ikz = -NKz,NKz
   do ikr = 1,NKr
     jz_intra = jz_intra + kz(ikz)*abs(zCt(2,ikr,ikz))**2*kr(ikr)
-    zfact = exp(-zI*deps_int(ikr,ikz))
-    jz_inter = jz_inter + 2d0*real(zfact*conjg(zCt(1,ikr,ikz))*zCt(2,ikr,ikz))*kr(ikr)
+    jz_inter = jz_inter + 2d0*real(conjg(zCt(1,ikr,ikz))*zCt(2,ikr,ikz))*kr(ikr)
   end do
   end do
 !$omp end parallel

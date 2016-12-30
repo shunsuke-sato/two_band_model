@@ -30,45 +30,17 @@ subroutine single_cell
 
   do it = 0,Nt
     write(*,*)'it=',it,'/',Nt
+    call dt_evolve(it)
+
+    
     call current(jz_intra,jz_inter)
-    jtz_intra(it) = jz_intra; jtz_inter(it) = jz_inter
-    jtz(it) = jtz_intra(it) + jtz_inter(it)
+    jtz_intra(it+1) = jz_intra; jtz_inter(it+1) = jz_inter
+    jtz(it+1) = jtz_intra(it+1) + jtz_inter(it+1)
 
     if(mod(it,100) == 0 .or. it == Nt)then
        call energy(Eex)
-       write(21,"(999e26.16e3)")dt*it,Eex
+       write(21,"(999e26.16e3)")dt*(it+1),Eex
     end if
-
-!=== deps_int, deps ====
-    deps_int = deps_int + 0.5d0*(dt*0.5d0)*deps
-!$omp parallel
-!$omp do private(ikz, ikr)
-    do ikz = -NKz,NKz
-      kz(ikz) = kz0(ikz) + Act_dt2(it)
-      do ikr = 1,NKr
-        deps(ikr,ikz) = eps_g + 0.5d0/mass_r*(kr(ikr)**2+kz(ikz)**2)
-      end do
-    end do
-!$omp end parallel
-    deps_int = deps_int + 0.5d0*(dt*0.5d0)*deps
-!=== deps_int, deps ====
-
-    Etz = -(Act(it+1)-Act(it))/dt
-    call dt_evolve(Etz)
-
-!=== deps_int, deps ====
-    deps_int = deps_int + 0.5d0*(dt*0.5d0)*deps
-!$omp parallel
-!$omp do private(ikz, ikr)
-    do ikz = -NKz,NKz
-      kz(ikz) = kz0(ikz) + Act(it+1)
-      do ikr = 1,NKr
-        deps(ikr,ikz) = eps_g + 0.5d0/mass_r*(kr(ikr)**2+kz(ikz)**2)
-      end do
-    end do
-!$omp end parallel
-    deps_int = deps_int + 0.5d0*(dt*0.5d0)*deps
-!=== deps_int, deps ====
 
   end do
 

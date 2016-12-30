@@ -4,36 +4,100 @@
 ! https://opensource.org/licenses/mit-license.php   !
 !---------------------------------------------------!
 !-------10--------20--------30--------40--------50--------60--------70--------80--------90
-subroutine dt_evolve(Etz) ! Now coding
+subroutine dt_evolve(it) ! Now coding
   use global_variables
   implicit none
-  real(8) :: lambda,theta_p,theta_m,eps_p,eps_m
-  real(8) :: Etz,ss
-  complex(8) :: zsp,zsm
+  integer :: it
+  real(8) :: lambda_v,lambda_c,theta_p,theta_m,eps_p,eps_m
+  real(8) :: Etz0,Etz1,alpha,ss
+  complex(8) :: zx,zy
   integer :: ikr,ikz
-  complex(8) :: zeig_vec_p(2), zeig_vec_m(2)
+  complex(8) :: zeig_vec_v(2), zeig_vec_c(2)
 
+  Etz0 = 0.5d0*(Act(it+1)-Act(it-1))/dt
+  Etz1 = 0.5d0*(Act(it+2)-Act(it))/dt
+  
 !$omp parallel
-!$omp do private(ikz, ikr,lambda,theta_p,theta_m,zeig_vec_p,zeig_vec_m,eps_p,eps_m,zsp,zsm)
+
+!=== deps_int, deps ====
+!$omp do private(ikz, ikr)
+    do ikz = -NKz,NKz
+      kz(ikz) = kz0(ikz) + Act(it)
+      do ikr = 1,NKr
+        deps(ikr,ikz) = eps_g + 0.5d0/mass_r*(kr(ikr)**2+kz(ikz)**2)
+      end do
+    end do
+!=== deps_int, deps ====
+  
+  
+!$omp do private(ikz,ikr,alpha,lambda_v,lambda_c,zx,zy,ss,zeig_vec_v,zeig_vec_c,Etz0)
   do ikz = -NKz,NKz
   do ikr = 1,NKr
 
-    lambda = deps_int(ikr,ikz)
-    theta_p = lambda + 0.5d0*pi; theta_m = lambda - 0.5d0*pi
-    zeig_vec_p(1) = 1d0/sqrt(2d0); zeig_vec_p(2) = exp(zi*theta_p)/sqrt(2d0)
-    zeig_vec_m(1) = 1d0/sqrt(2d0); zeig_vec_m(2) = exp(zi*theta_m)/sqrt(2d0)
+    alpha = -piz_vc*Etz0/deps(ikr,ikz)
+    lambda_v = 0.5d0*(deps(ikr,ikz)-sqrt(deps(ikr,ikz)**2+4d0*alpha**2))
+    lambda_c = 0.5d0*(deps(ikr,ikz)+sqrt(deps(ikr,ikz)**2+4d0*alpha**2))
+    zx = zi*alpha/(deps(ikr,ikz)-lambda_v)
+    zy = zi*alpha/lambda_c
 
-    eps_p = -piz_vc*Etz/deps(ikr,ikz); eps_m = -eps_p
+    ss = 1d0/sqrt(1d0+abs(zx)**2)
+    zeig_vec_v(1) = ss; zeig_vec_v(2) = zx*ss
 
-    zsp = sum(conjg(zeig_vec_p(:))*zCt(:,ikr,ikz))
-    zsm = sum(conjg(zeig_vec_m(:))*zCt(:,ikr,ikz))
+    ss = 1d0/sqrt(abs(zy)**2+1d0)
+    zeig_vec_c(1) = zy*ss; zeig_vec_c(2) = ss
 
-    zsp = zsp * exp(-zI*eps_p*dt)
-    zsm = zsm * exp(-zI*eps_m*dt)
-    zCt(:,ikr,ikz) = zsp*zeig_vec_p(:) + zsm*zeig_vec_m(:)
+    zx = sum(conjg(zeig_vec_v(:))*zCt(:,ikr,ikz))
+    zy = sum(conjg(zeig_vec_c(:))*zCt(:,ikr,ikz))
+
+
+    zx = zx * exp(-zI*lambda_v*0.5d0*dt)
+    zy = zy * exp(-zI*lambda_c*0.5d0*dt)
+
+    zCt(:,ikr,ikz) = zx*zeig_vec_v(:) + zy*zeig_vec_c(:)
 
   end do
   end do
+
+
+!=== deps_int, deps ====
+!$omp do private(ikz, ikr)
+    do ikz = -NKz,NKz
+      kz(ikz) = kz0(ikz) + Act(it+1)
+      do ikr = 1,NKr
+        deps(ikr,ikz) = eps_g + 0.5d0/mass_r*(kr(ikr)**2+kz(ikz)**2)
+      end do
+    end do
+!=== deps_int, deps ====
+  
+  
+!$omp do private(ikz,ikr,alpha,lambda_v,lambda_c,zx,zy,ss,zeig_vec_v,zeig_vec_c,Etz1)
+  do ikz = -NKz,NKz
+  do ikr = 1,NKr
+
+    alpha = -piz_vc*Etz1/deps(ikr,ikz)
+    lambda_v = 0.5d0*(deps(ikr,ikz)-sqrt(deps(ikr,ikz)**2+4d0*alpha**2))
+    lambda_c = 0.5d0*(deps(ikr,ikz)+sqrt(deps(ikr,ikz)**2+4d0*alpha**2))
+    zx = zi*alpha/(deps(ikr,ikz)-lambda_v)
+    zy = zi*alpha/lambda_c
+
+    ss = 1d0/sqrt(1d0+abs(zx)**2)
+    zeig_vec_v(1) = ss; zeig_vec_v(2) = zx*ss
+
+    ss = 1d0/sqrt(abs(zy)**2+1d0)
+    zeig_vec_c(1) = zy*ss; zeig_vec_c(2) = ss
+
+    zx = sum(conjg(zeig_vec_v(:))*zCt(:,ikr,ikz))
+    zy = sum(conjg(zeig_vec_c(:))*zCt(:,ikr,ikz))
+
+
+    zx = zx * exp(-zI*lambda_v*0.5d0*dt)
+    zy = zy * exp(-zI*lambda_c*0.5d0*dt)
+
+    zCt(:,ikr,ikz) = zx*zeig_vec_v(:) + zy*zeig_vec_c(:)
+
+  end do
+  end do
+
 !$omp end parallel
 
   return

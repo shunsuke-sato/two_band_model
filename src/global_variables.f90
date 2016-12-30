@@ -16,7 +16,9 @@ module global_variables
   integer :: NKr,NKz
   real(8) :: kr_max,kz_max,dkr,dkz
   real(8),allocatable :: kr(:),kz0(:),kz(:)
-  real(8),parameter :: piz_vc = 1.0d0, mass_r = 1.4d0, eps_g = 42.2d0/(2d0*Ry) 
+  real(8),parameter ::  eps_g = 7.3d0/(2d0*Ry) 
+  real(8),parameter :: mass_r = 1d0/(1d0/2.030d0+1d0/0.427d0)
+  real(8),parameter :: piz_vc = 0.50d0*sqrt(eps_g/mass_r)
 
 ! Time-propagation
   integer :: Nt

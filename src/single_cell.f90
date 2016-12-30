@@ -47,7 +47,7 @@ subroutine single_cell
   close(21)
   open(21,file='Act_jtz.out')
   do it = 0,Nt
-    write(21,'(999e26.16e3)')dt*dble(it),Act(it),jtz(it),jtz_intra(it),jtz_inter(it),Act_dt2(it)
+    write(21,'(999e26.16e3)')dt*dble(it),Act(it),jtz(it),jtz_intra(it),jtz_inter(it)
   end do
   close(21)
 

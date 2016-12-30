@@ -34,7 +34,7 @@ subroutine input_Ac
   write(*,"(A,2x,999e26.16e3)")"E0_2=",E0_2
 
 
-  Act = 0d0
+  Act = 0d0; jtz=0d0; jtz_intra = 0d0; jtz_inter = 0d0
 
 !Pump
   select case(envelope_1)
@@ -47,14 +47,6 @@ subroutine input_Ac
       end if
     end do
 
-    Act_dt2 = 0d0
-    do it = 0,Nt+1
-      tt = dt*dble(it) + 0.5d0*dt
-      if(abs(tt-0.5d0*tpulse_1) < 0.5d0*tpulse_1)then
-        Act_dt2(it) = -(E0_1/omega_1)*cos(pi*(tt-0.5d0*tpulse_1)/tpulse_1)**4 &
-          *sin(omega_1*(tt-0.5d0*tpulse_1))
-      end if
-    end do
   case("cos2cos")
     do it = 0,Nt+1
       tt = dt*dble(it)
@@ -64,14 +56,6 @@ subroutine input_Ac
       end if
     end do
 
-    Act_dt2 = 0d0
-    do it = 0,Nt+1
-      tt = dt*dble(it) + 0.5d0*dt
-      if(abs(tt-0.5d0*tpulse_1) < 0.5d0*tpulse_1)then
-        Act_dt2(it) = -(E0_1/omega_1)*cos(pi*(tt-0.5d0*tpulse_1)/tpulse_1)**2 &
-          *sin(omega_1*(tt-0.5d0*tpulse_1))
-      end if
-    end do
   case default
     stop "Invalid envelope_1"
   end select
@@ -89,16 +73,7 @@ subroutine input_Ac
       end if
     end do
 
-    Act_dt2 = 0d0
-    do it = 0,Nt+1
-      tt = dt*dble(it) + 0.5d0*dt
 
-      if(abs(tt-0.5d0*tpulse_1-Tdelay) < 0.5d0*tpulse_2)then
-        Act_dt2(it) = Act_dt2(it) -(E0_2/omega_2) &
-          *cos(pi*(tt-0.5d0*tpulse_1-Tdelay)/tpulse_2)**4 &
-          *sin(omega_2*(tt-0.5d0*tpulse_1-Tdelay))
-      end if
-    end do
   case("cos2cos")  
     do it = 0,Nt+1
       tt = dt*dble(it)
@@ -110,16 +85,6 @@ subroutine input_Ac
       end if
     end do
 
-    Act_dt2 = 0d0
-    do it = 0,Nt+1
-      tt = dt*dble(it) + 0.5d0*dt
-
-      if(abs(tt-0.5d0*tpulse_1-Tdelay) < 0.5d0*tpulse_2)then
-        Act_dt2(it) = Act_dt2(it) -(E0_2/omega_2) &
-          *cos(pi*(tt-0.5d0*tpulse_1-Tdelay)/tpulse_2)**4 &
-          *sin(omega_2*(tt-0.5d0*tpulse_1-Tdelay))
-      end if
-    end do
   case default
     stop "Invalid envelope_1"
   end select

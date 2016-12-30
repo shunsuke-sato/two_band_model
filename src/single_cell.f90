@@ -10,8 +10,8 @@ subroutine single_cell
   integer :: it,ikz,ikr
   real(8) :: jz_intra,jz_inter,Etz,Eex
   integer :: it_delay
-  integer,parameter :: Ndelay = 30
-  real(8),parameter :: Tdelay_fs_ini=-3d0,Tdelay_fs_fin=3d0
+  integer,parameter :: Ndelay = 3 !51
+  real(8),parameter :: Tdelay_fs_ini=-5.66314663756d0,Tdelay_fs_fin=5.66314663756d0
   real(8),parameter :: dTdelay_fs = (Tdelay_fs_fin-Tdelay_fs_ini)/dble(Ndelay)
   real(8) :: Iwcm2_1_t,Iwcm2_2_t
   character(50) :: citer,filename
@@ -57,10 +57,10 @@ subroutine single_cell
 
 
 
-  open(21,file="Eex.out")
+!  open(21,file="Eex.out")
 
   do it = 0,Nt
-    write(*,*)'it=',it,'/',Nt
+!    write(*,*)'it=',it,'/',Nt
     call dt_evolve(it)
 
     
@@ -68,10 +68,10 @@ subroutine single_cell
     jtz_intra(it+1) = jz_intra; jtz_inter(it+1) = jz_inter
     jtz(it+1) = jtz_intra(it+1) + jtz_inter(it+1)
 
-    if(mod(it,100) == 0 .or. it == Nt)then
-       call energy(Eex)
-       write(21,"(999e26.16e3)")dt*(it+1),Eex
-    end if
+!    if(mod(it,100) == 0 .or. it == Nt)then
+!       call energy(Eex)
+!       write(21,"(999e26.16e3)")dt*(it+1),Eex
+!    end if
 
   end do
 
@@ -79,13 +79,13 @@ subroutine single_cell
   if(it_delay == -2)then
      open(21,file='Pump_only_Act_jtz.out')
      do it = 0,Nt
-        write(21,'(999e26.16e3)')dt*dble(it),Act(it),jtz(it),jtz_intra(it),jtz_inter(it),Act_dt2(it)
+        write(21,'(999e26.16e3)')dt*dble(it),Act(it),jtz(it),jtz_intra(it),jtz_inter(it)
      end do
      close(21)
   else if(it_delay == -1)then
      open(21,file='Probe_only_Act_jtz.out')
      do it = 0,Nt
-        write(21,'(999e26.16e3)')dt*dble(it),Act(it),jtz(it),jtz_intra(it),jtz_inter(it),Act_dt2(it)
+        write(21,'(999e26.16e3)')dt*dble(it),Act(it),jtz(it),jtz_intra(it),jtz_inter(it)
      end do
      close(21)
   else
@@ -93,7 +93,7 @@ subroutine single_cell
      filename=trim(citer)//"_Act_jtz.out"
      open(21,file=filename)
      do it = 0,Nt
-        write(21,'(999e26.16e3)')dt*dble(it),Act(it),jtz(it),jtz_intra(it),jtz_inter(it),Act_dt2(it)
+        write(21,'(999e26.16e3)')dt*dble(it),Act(it),jtz(it),jtz_intra(it),jtz_inter(it)
      end do
      close(21)
   end if

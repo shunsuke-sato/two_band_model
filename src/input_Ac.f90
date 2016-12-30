@@ -11,7 +11,7 @@ subroutine input_Ac(fact1,fact2)
   integer :: it
   real(8) :: tt
   real(8) :: Es,Up,alpha
-  real(8),parameter ::  gamma = 1d0
+  real(8),parameter ::  gamma = 1d-4
 
   allocate(Act(-1:Nt+2),jtz(0:Nt+1),jtz_intra(0:Nt+1),jtz_inter(0:Nt+1))
 

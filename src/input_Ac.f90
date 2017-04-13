@@ -56,6 +56,15 @@ subroutine input_Ac
       end if
     end do
 
+  case("cos6cos")
+    do it = 0,Nt+1
+      tt = dt*dble(it)
+      if(abs(tt-0.5d0*tpulse_1) < 0.5d0*tpulse_1)then
+        Act(it) = -(E0_1/omega_1)*cos(pi*(tt-0.5d0*tpulse_1)/tpulse_1)**6 &
+          *sin(omega_1*(tt-0.5d0*tpulse_1))
+      end if
+    end do
+
   case default
     stop "Invalid envelope_1"
   end select
@@ -80,7 +89,18 @@ subroutine input_Ac
 
       if(abs(tt-0.5d0*tpulse_1-Tdelay) < 0.5d0*tpulse_2)then
         Act(it) = Act(it) -(E0_2/omega_2) &
-          *cos(pi*(tt-0.5d0*tpulse_1-Tdelay)/tpulse_2)**4 &
+          *cos(pi*(tt-0.5d0*tpulse_1-Tdelay)/tpulse_2)**2 &
+          *sin(omega_2*(tt-0.5d0*tpulse_1-Tdelay))
+      end if
+    end do
+
+  case("cos6cos")
+    do it = 0,Nt+1
+      tt = dt*dble(it)
+
+      if(abs(tt-0.5d0*tpulse_1-Tdelay) < 0.5d0*tpulse_2)then
+        Act(it) = Act(it) -(E0_2/omega_2) &
+          *cos(pi*(tt-0.5d0*tpulse_1-Tdelay)/tpulse_2)**6 &
           *sin(omega_2*(tt-0.5d0*tpulse_1-Tdelay))
       end if
     end do

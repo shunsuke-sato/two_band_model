@@ -22,7 +22,7 @@ subroutine dt_evolve(it) ! Now coding
 !=== deps_int, deps ====
 !$omp do private(ikz, ikr)
     do ikz = -NKz,NKz
-      kz(ikz) = kz0(ikz) + Act(it)
+      kz(ikz) = kz0(ikz) + Act(it)*fact_intra
       do ikr = 1,NKr
         deps(ikr,ikz) = eps_g + 0.5d0/mass_r*(kr(ikr)**2+kz(ikz)**2)
       end do
@@ -62,7 +62,7 @@ subroutine dt_evolve(it) ! Now coding
 !=== deps_int, deps ====
 !$omp do private(ikz, ikr)
     do ikz = -NKz,NKz
-      kz(ikz) = kz0(ikz) + Act(it+1)
+      kz(ikz) = kz0(ikz) + Act(it+1)*fact_intra
       do ikr = 1,NKr
         deps(ikr,ikz) = eps_g + 0.5d0/mass_r*(kr(ikr)**2+kz(ikz)**2)
       end do

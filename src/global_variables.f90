@@ -19,6 +19,7 @@ module global_variables
   real(8),parameter :: eps_g = 1.52d0/(2d0*Ry) 
   real(8),parameter :: mass_r = 1d0/(1d0/0.57d0+1d0/0.067d0)
   real(8),parameter :: piz_vc = 0.5d0*sqrt(eps_g/mass_r)
+  real(8),parameter :: fact_intra = 1d0
 
 ! Time-propagation
   integer :: Nt

@@ -4,10 +4,10 @@
 ! https://opensource.org/licenses/mit-license.php   !
 !---------------------------------------------------!
 !-------10--------20--------30--------40--------50--------60--------70--------80--------90
-subroutine excited_electron(nex,it)
+subroutine excited_electron(nex,nex_v,it)
   use global_variables
   implicit none
-  real(8),intent(out) :: nex
+  real(8),intent(out) :: nex,nex_v
   integer,intent(in) :: it
   real(8) :: lambda_v,lambda_c,theta_p,theta_m,eps_p,eps_m
   real(8) :: Etz0,Etz1,alpha,ss
@@ -17,6 +17,7 @@ subroutine excited_electron(nex,it)
 
   Etz0 = 0.5d0*(Act(it+1)-Act(it-1))/dt
   nex = 0d0
+  nex_v = 0d0
 
 !$omp parallel
 
@@ -31,9 +32,7 @@ subroutine excited_electron(nex,it)
 !=== deps_int, deps ====
 
 
-
-
-!$omp do private(ikz,ikr,alpha,lambda_v,lambda_c,zx,zy,ss,zeig_vec_c,zeig_vec_v) reduction(+:nex)
+!$omp do private(ikz,ikr,alpha,lambda_v,lambda_c,zx,zy,ss,zeig_vec_c,zeig_vec_v) reduction(+:nex, nex_v)
   do ikz = -NKz,NKz
   do ikr = 1,NKr
 
@@ -53,10 +52,13 @@ subroutine excited_electron(nex,it)
     zy = sum(conjg(zeig_vec_c(:))*zCt(:,ikr,ikz))
 
     nex = nex+ abs(zy)**2*kr(ikr)
+    nex_v = nex_v+ abs(zCt(2,ikr,ikz))**2*kr(ikr)
   end do
   end do
 !$omp end parallel
+
   nex = nex*2d0/((2d0*pi)**3)*(2d0*pi*dkr*dkz) 
+  nex_v = nex_v*2d0/((2d0*pi)**3)*(2d0*pi*dkr*dkz) 
 
   return
 end subroutine excited_electron

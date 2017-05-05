@@ -37,10 +37,10 @@ subroutine single_cell
     jtz_intra(it+1) = jz_intra; jtz_inter(it+1) = jz_inter
     jtz(it+1) = jtz_intra(it+1) + jtz_inter(it+1)
 
-    if(mod(it,100) == 0 .or. it == Nt)then
+    if(mod(it,10) == 0 .or. it == Nt)then
        call energy(Eex)
        call excited_electron(nex,nex_v,nex_r,it+1)
-       write(21,"(999e26.16e3)")dt*(it+1),Eex,nex,nex_v,nex_r
+       write(21,"(999e26.16e3)")dt*(it+1),Eex,nex_v,nex,nex_r
     end if
 
   end do

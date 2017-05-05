@@ -16,7 +16,7 @@ subroutine excited_electron(nex,nex_v,nex_r,it)
   complex(8) :: zeig_vec_v(2), zeig_vec_c(2)
   complex(8) :: zeig_vec_acc_v(2), zeig_vec_acc_c(2)
   real(8) :: lambda_acc_v,lambda_acc_c
-  real(8) :: xx, xx_dot, ff, ff_dot
+  real(8) :: xx, xx_dot, ff, ff_dot, eta, eta_dot
   real(8) :: deps_dot(NKr,-NKz:NKz)
 
   Etz0 = -0.5d0*(Act(it+1)-Act(it-1))/dt
@@ -39,7 +39,9 @@ subroutine excited_electron(nex,nex_v,nex_r,it)
 !=== deps_int, deps ====
 
 
-!$omp do private(ikz,ikr,alpha,lambda_v,lambda_c,zx,zy,ss,zeig_vec_c,zeig_vec_v) reduction(+:nex, nex_v, nex_r)
+!$omp do private(ikz,ikr,alpha,lambda_v,lambda_c,zx,zy,ss,zeig_vec_c,zeig_vec_v, &
+!$omp& eta,eta_dot,xx,xx_dot,lambda_acc_v,lambda_acc_c,zeig_vec_acc_v,zeig_vec_acc_c) &
+!$omp& reduction(+:nex, nex_v, nex_r)
   do ikz = -NKz,NKz
   do ikr = 1,NKr
 
@@ -62,16 +64,12 @@ subroutine excited_electron(nex,nex_v,nex_r,it)
     nex_v = nex_v+ abs(zCt(2,ikr,ikz))**2*kr(ikr)
 
 ! real carrier
-    ff = deps(ikr,ikz)**2 + sqrt(deps(ikr,ikz)**4 + 4d0*piz_vc**2*Etz0**2)
-    xx = 2*piz_vc*Etz0/ff
-    ff_dot = 2d0*deps(ikr,ikz)*deps_dot(ikr,ikz) &
-      +2d0*(deps(ikr,ikz)**3*deps_dot(ikr,ikz)+2d0*piz_vc**2*Etz0*dEt_dt)/ &
-      sqrt(deps(ikr,ikz)**4 + 4d0*piz_vc**2*Etz0**2)
-
-    xx_dot = 2d0*piz_vc*(dEt_dt*ff - Etz0*ff_dot)/ff**2
+    eta = 2d0*piz_vc*Etz0/deps(ikr,ikz)
+    eta_dot = 2d0*piz_vc*(dEt_dt*deps(ikr,ikz) -2d0*Etz0*deps_dot(ikr,ikz) )/deps(ikr,ikz)**3
+    xx = eta/(1d0 + sqrt(1d0 + eta**2))
+    xx_dot = eta_dot/(1d0 + sqrt(1d0 + eta**2))/sqrt(1d0 + eta**2)
 
     alpha = xx_dot/(1d0 + xx**2)
-    dlambda = lambda_c - lambda_v
 
     lambda_acc_v = (lambda_v + lambda_c) &
       - sqrt((lambda_c - lambda_v)**2 + 4d0*alpha**2)
@@ -91,7 +89,7 @@ subroutine excited_electron(nex,nex_v,nex_r,it)
     ss = sum(abs(zeig_vec_acc_c)**2); zeig_vec_acc_c = zeig_vec_acc_c/sqrt(ss)
 
     zy = sum(conjg(zeig_vec_acc_c(:))*zCt(:,ikr,ikz))
-    
+
     nex_r = nex_r+ abs(zy)**2*kr(ikr)
 
 

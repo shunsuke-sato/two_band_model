@@ -14,8 +14,8 @@ subroutine dt_evolve(it) ! Now coding
   integer :: ikr,ikz
   complex(8) :: zeig_vec_v(2), zeig_vec_c(2)
 
-  Etz0 = 0.5d0*(Act(it+1)-Act(it-1))/dt
-  Etz1 = 0.5d0*(Act(it+2)-Act(it))/dt
+  Etz0 = -0.5d0*(Act(it+1)-Act(it-1))/dt
+  Etz1 = -0.5d0*(Act(it+2)-Act(it))/dt
   
 !$omp parallel
 
@@ -34,7 +34,7 @@ subroutine dt_evolve(it) ! Now coding
   do ikz = -NKz,NKz
   do ikr = 1,NKr
 
-    alpha = -piz_vc*Etz0/deps(ikr,ikz)
+    alpha = piz_vc*Etz0/deps(ikr,ikz)
     lambda_v = 0.5d0*(deps(ikr,ikz)-sqrt(deps(ikr,ikz)**2+4d0*alpha**2))
     lambda_c = 0.5d0*(deps(ikr,ikz)+sqrt(deps(ikr,ikz)**2+4d0*alpha**2))
     zx = zi*alpha/(deps(ikr,ikz)-lambda_v)
@@ -74,7 +74,7 @@ subroutine dt_evolve(it) ! Now coding
   do ikz = -NKz,NKz
   do ikr = 1,NKr
 
-    alpha = -piz_vc*Etz1/deps(ikr,ikz)
+    alpha = piz_vc*Etz1/deps(ikr,ikz)
     lambda_v = 0.5d0*(deps(ikr,ikz)-sqrt(deps(ikr,ikz)**2+4d0*alpha**2))
     lambda_c = 0.5d0*(deps(ikr,ikz)+sqrt(deps(ikr,ikz)**2+4d0*alpha**2))
     zx = zi*alpha/(deps(ikr,ikz)-lambda_v)

@@ -19,15 +19,9 @@ subroutine dt_evolve(it) ! Now coding
   
 !$omp parallel
 
-!=== deps_int, deps ====
-!$omp do private(ikz, ikr)
-    do ikz = -NKz,NKz
-      kz(ikz) = kz0(ikz) + Act(it)*fact_intra
-      do ikr = 1,NKr
-        deps(ikr,ikz) = eps_g + 0.5d0/mass_r*(kr(ikr)**2+kz(ikz)**2)
-      end do
-    end do
-!=== deps_int, deps ====
+
+  kz(:) = kz0(:) + Act(it)*fact_intra
+  call set_deps
   
   
 !$omp do private(ikz,ikr,alpha,lambda_v,lambda_c,zx,zy,ss,zeig_vec_v,zeig_vec_c)
@@ -59,15 +53,8 @@ subroutine dt_evolve(it) ! Now coding
   end do
 
 
-!=== deps_int, deps ====
-!$omp do private(ikz, ikr)
-    do ikz = -NKz,NKz
-      kz(ikz) = kz0(ikz) + Act(it+1)*fact_intra
-      do ikr = 1,NKr
-        deps(ikr,ikz) = eps_g + 0.5d0/mass_r*(kr(ikr)**2+kz(ikz)**2)
-      end do
-    end do
-!=== deps_int, deps ====
+  kz(:) = kz0(:) + Act(it+1)*fact_intra
+  call set_deps
   
   
 !$omp do private(ikz,ikr,alpha,lambda_v,lambda_c,zx,zy,ss,zeig_vec_v,zeig_vec_c)

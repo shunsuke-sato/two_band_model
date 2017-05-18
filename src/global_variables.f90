@@ -12,18 +12,21 @@ module global_variables
   complex(8),parameter :: zI = (0d0,1d0)
   real(8),parameter :: a_B=0.529177d0,Ry=13.6058d0
 
-! Material parameter
+! Control parameters
+  integer,parameter :: N_PARABOLIC_BAND = 0
+  integer,parameter :: N_NONPARABOLIC_BAND = 1
+
+! Material parameters
   integer :: NKr,NKz
   real(8) :: kr_max,kz_max,dkr,dkz
   real(8),allocatable :: kr(:),kz0(:),kz(:)
-  real(8),parameter :: eps_g = 1.52d0/(2d0*Ry) 
-  real(8),parameter :: mass_r = 1d0/(1d0/0.57d0+1d0/0.067d0)
+  real(8),parameter :: eps_g = 9d0/(2d0*Ry)  !1.52d0/(2d0*Ry) 
+  real(8),parameter :: mass_r = 0.4d0 !1d0/(1d0/0.57d0+1d0/0.067d0)
   real(8),parameter :: piz_vc = 0.5d0*sqrt(eps_g/mass_r)
   real(8),parameter :: fact_intra = 1d0
-  integer,parameter :: nband_type = 0
+  integer,parameter :: nband_type = N_PARABOLIC_BAND !N_NONPARABOLIC_BAND
 
-  integer,parameter :: N_PARABOLIC_BAND = 0
-  integer,parameter :: N_NONPARABOLIC_BAND = 1
+
 
 ! Time-propagation
   integer :: Nt

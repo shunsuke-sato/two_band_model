@@ -9,21 +9,35 @@ subroutine dt_evolve(it) ! Now coding
   implicit none
   integer :: it
   real(8) :: lambda_v,lambda_c,theta_p,theta_m,eps_p,eps_m
-  real(8) :: Etz0,Etz1,alpha,ss
+  real(8) :: Etz0,Etz1,Act_t1,Act_t2,alpha,ss
   complex(8) :: zx,zy
   integer :: ikr,ikz
   complex(8) :: zeig_vec_v(2), zeig_vec_c(2)
 
-  Etz0 = -0.5d0*(Act(it+1)-Act(it-1))/dt
-  Etz1 = -0.5d0*(Act(it+2)-Act(it))/dt
-  
-!$omp parallel
+  select case(npump_probe_type)
+  case(N_COMBINED_PUMP_PROBE)
+    Etz0 = -0.5d0*(Act(it+1)-Act(it-1))/dt
+    Etz1 = -0.5d0*(Act(it+2)-Act(it))/dt
+    Act_t1 = Act(it)
+    Act_t2 = Act(it+1)
+  case(N_DECOMPOSED_PUMP_PROBE)
+    Etz0 = -0.5d0*(Act_probe(it+1)-Act_probe(it-1))/dt
+    Etz1 = -0.5d0*(Act_probe(it+2)-Act_probe(it))/dt
+    Act_t1 = Act_pump(it)
+    Act_t2 = Act_pump(it+1)
+  case default
+    write(*,"(A,2x,A)")"Invalid npump_probe_type",npump_probe_type
+  end select
 
 
-  kz(:) = kz0(:) + Act(it)*fact_intra
+!$omp parallel do private(ikz)
+  do ikz = -NKz,NKz
+    kz(ikz) = kz0(ikz) + Act_t1*fact_intra
+  end do
+
   call set_deps
   
-  
+!$omp parallel  
 !$omp do private(ikz,ikr,alpha,lambda_v,lambda_c,zx,zy,ss,zeig_vec_v,zeig_vec_c)
   do ikz = -NKz,NKz
   do ikr = 1,NKr
@@ -53,7 +67,11 @@ subroutine dt_evolve(it) ! Now coding
   end do
 
 
-  kz(:) = kz0(:) + Act(it+1)*fact_intra
+!$omp parallel do private(ikz)
+  do ikz = -NKz,NKz
+    kz(ikz) = kz0(ikz) + Act_t2*fact_intra
+  end do
+
   call set_deps
   
   

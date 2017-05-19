@@ -12,9 +12,14 @@ module global_variables
   complex(8),parameter :: zI = (0d0,1d0)
   real(8),parameter :: a_B=0.529177d0,Ry=13.6058d0
 
-! Control parameters
+!! Control parameters
+! Band structure parameters
   integer,parameter :: N_PARABOLIC_BAND = 0
   integer,parameter :: N_NONPARABOLIC_BAND = 1
+! Pump-probe parameters
+  integer,parameter :: N_COMBINED_PUMP_PROBE = 0
+  integer,parameter :: N_DECOMPOSED_PUMP_PROBE = 1
+
 
 ! Material parameters
   integer :: NKr,NKz
@@ -29,11 +34,13 @@ module global_variables
 
 
 ! Time-propagation
+  integer,parameter :: npump_probe_type = N_COMBINED_PUMP_PROBE
   integer :: Nt
   real(8) :: dt
   real(8),allocatable :: deps_int(:,:),deps(:,:),ddeps_dkz(:,:)
   complex(8),allocatable :: zCt(:,:,:)
   real(8),allocatable :: Act(:),Act_dt2(:),jtz(:),jtz_intra(:),jtz_inter(:)
+  real(8),allocatable :: Act_pump(:),Act_probe(:)
   character(20) :: envelope_1,envelope_2
 
 ! Laser parameters

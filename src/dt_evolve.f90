@@ -37,8 +37,7 @@ subroutine dt_evolve(it) ! Now coding
 
   call set_deps
   
-!$omp parallel  
-!$omp do private(ikz,ikr,alpha,lambda_v,lambda_c,zx,zy,ss,zeig_vec_v,zeig_vec_c)
+!$omp parallel do private(ikz,ikr,alpha,lambda_v,lambda_c,zx,zy,ss,zeig_vec_v,zeig_vec_c)
   do ikz = -NKz,NKz
   do ikr = 1,NKr
 
@@ -75,7 +74,7 @@ subroutine dt_evolve(it) ! Now coding
   call set_deps
   
   
-!$omp do private(ikz,ikr,alpha,lambda_v,lambda_c,zx,zy,ss,zeig_vec_v,zeig_vec_c)
+!$omp parallel do private(ikz,ikr,alpha,lambda_v,lambda_c,zx,zy,ss,zeig_vec_v,zeig_vec_c)
   do ikz = -NKz,NKz
   do ikr = 1,NKr
 
@@ -103,7 +102,6 @@ subroutine dt_evolve(it) ! Now coding
   end do
   end do
 
-!$omp end parallel
 
   return
 end subroutine dt_evolve

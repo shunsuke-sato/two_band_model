@@ -45,7 +45,7 @@ subroutine input_Ac
       tt = dt*dble(it)
       if(abs(tt-0.5d0*tpulse_1) < 0.5d0*tpulse_1)then
         Act_pump(it) = -(E0_1/omega_1)*cos(pi*(tt-0.5d0*tpulse_1)/tpulse_1)**4 &
-          *sin(omega_1*(tt-0.5d0*tpulse_1))
+          *sin(omega_1*(tt-0.5d0*tpulse_1)+2d0*pi*CEP_2pi_1)
       end if
     end do
 
@@ -54,7 +54,7 @@ subroutine input_Ac
       tt = dt*dble(it)
       if(abs(tt-0.5d0*tpulse_1) < 0.5d0*tpulse_1)then
         Act_pump(it) = -(E0_1/omega_1)*cos(pi*(tt-0.5d0*tpulse_1)/tpulse_1)**2 &
-          *sin(omega_1*(tt-0.5d0*tpulse_1))
+          *sin(omega_1*(tt-0.5d0*tpulse_1) +2d0*pi*CEP_2pi_1)
       end if
     end do
 
@@ -63,7 +63,7 @@ subroutine input_Ac
       tt = dt*dble(it)
       if(abs(tt-0.5d0*tpulse_1) < 0.5d0*tpulse_1)then
         Act_pump(it) = -(E0_1/omega_1)*cos(pi*(tt-0.5d0*tpulse_1)/tpulse_1)**6 &
-          *sin(omega_1*(tt-0.5d0*tpulse_1))
+          *sin(omega_1*(tt-0.5d0*tpulse_1)+2d0*pi*CEP_2pi_1)
       end if
     end do
 
@@ -80,7 +80,7 @@ subroutine input_Ac
       if(abs(tt-0.5d0*tpulse_1-Tdelay) < 0.5d0*tpulse_2)then
         Act_probe(it) = -(E0_2/omega_2) &
           *cos(pi*(tt-0.5d0*tpulse_1-Tdelay)/tpulse_2)**4 &
-          *sin(omega_2*(tt-0.5d0*tpulse_1-Tdelay))
+          *sin(omega_2*(tt-0.5d0*tpulse_1-Tdelay)+2d0*pi*CEP_2pi_2)
       end if
     end do
 
@@ -92,7 +92,7 @@ subroutine input_Ac
       if(abs(tt-0.5d0*tpulse_1-Tdelay) < 0.5d0*tpulse_2)then
         Act_probe(it) = -(E0_2/omega_2) &
           *cos(pi*(tt-0.5d0*tpulse_1-Tdelay)/tpulse_2)**2 &
-          *sin(omega_2*(tt-0.5d0*tpulse_1-Tdelay))
+          *sin(omega_2*(tt-0.5d0*tpulse_1-Tdelay)+2d0*pi*CEP_2pi_2)
       end if
     end do
 
@@ -103,7 +103,7 @@ subroutine input_Ac
       if(abs(tt-0.5d0*tpulse_1-Tdelay) < 0.5d0*tpulse_2)then
         Act_probe(it) =  -(E0_2/omega_2) &
           *cos(pi*(tt-0.5d0*tpulse_1-Tdelay)/tpulse_2)**6 &
-          *sin(omega_2*(tt-0.5d0*tpulse_1-Tdelay))
+          *sin(omega_2*(tt-0.5d0*tpulse_1-Tdelay)+2d0*pi*CEP_2pi_2)
       end if
     end do
 

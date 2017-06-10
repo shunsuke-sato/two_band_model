@@ -12,7 +12,7 @@ module global_variables
   real(8),parameter :: a_B=0.529177d0,Ry=13.6058d0
 
 ! control parameter
-  character(2) :: calc_mode = 'ft' ! rt or ft
+  character(2) :: calc_mode = 'rf' ! rt or ft
 
 ! Material parameters
   real(8),parameter :: eps_g = 9d0/(2d0*Ry)  !1.52d0/(2d0*Ry) 
@@ -54,6 +54,11 @@ program jdos_rt
     call write_zDj
   case('ft')
     call read_zDj
+    call calc_zDj_w
+  case('rf')
+    call init_tfunction
+    call calc_zDj
+    call write_zDj
     call calc_zDj_w
   end select
 
@@ -103,7 +108,7 @@ subroutine calc_zDj
 
       do it = 0,Nt
         tt = dt*it + T0
-        ss1 = eps_tot*tt - theta2*sin2w0_t_t0(it)
+        ss1 = eps_tot*(tt-T0) - theta2*sin2w0_t_t0(it)
         ss2 = theta1*cosw0_t_t0(it)
         zDj(it) = zDj(it) + exp(-zI*ss1)*cos(ss2)*fact_xy(iepskxy)*fact_z(ikz)
       end do

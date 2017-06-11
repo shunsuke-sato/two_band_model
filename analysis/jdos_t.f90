@@ -169,8 +169,8 @@ subroutine calc_zDj_w
 
   do iw = 0,Nw
     ww = wi + dw*iw
-    zs = 0d0
-    do it = 0,Nt
+    zs = 0.5d0 * zDj(0)
+    do it = 1,Nt
       tt = dt*it
       xx = dble(it)/dble(Nt)
       ff = 1d0 - 3d0*xx**2 + 2d0*xx**3

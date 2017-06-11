@@ -104,7 +104,7 @@ subroutine calc_zDj
       eps_kz = 0.5d0*kz**2/mass_r
       eps_kxyz = eps_g + eps_kxy + eps_kz
       eps_tot = eps_kxyz + Up
-      theta1 = kz*E0/(omega0**2)
+      theta1 = kz*E0/(mass_r*omega0**2)
 
       do it = 0,Nt
         tt = dt*it + T0

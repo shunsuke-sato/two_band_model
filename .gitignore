@@ -1,0 +1,32 @@
+# Log files
+*.out
+*.log
+*.dat
+*~
+
+# Object files
+*.o
+
+# Module files
+*.mod
+
+# Executable files
+koala
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+### CMake ###
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+

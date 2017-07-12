@@ -22,6 +22,5 @@ subroutine excited_electron_k_resolved(nex_kz)
     nex_kz(ikz) = ss *2d0/((2d0*pi)**3)*(2d0*pi*dkr) 
 
   end do
-!$omp end parallel
 
 end subroutine excited_electron_k_resolved

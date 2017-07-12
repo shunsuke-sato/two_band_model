@@ -45,9 +45,9 @@ subroutine single_cell
        write(21,"(999e26.16e3)")dt*(it+1),Eex,nex_v,nex,nex_r
     end if
 
-    if(mod(it,1000) == 0 .or. it == Nt)then
+    if(mod(it,500) == 0 .or. it == Nt)then
       call excited_electron_k_resolved(nex_kz)
-      do ikz = -NKz, NKz,2
+      do ikz = -NKz, NKz,4
         write(22,"(9999e26.16e3)")dt*(it+1),kz0(ikz)+Act(it+1),nex_kz(ikz)
       end do
         write(22,*)

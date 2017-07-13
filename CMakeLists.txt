@@ -6,6 +6,7 @@ set(CMAKE_Fortran_COMPILER      "mpif90")
 set(CMAKE_Fortran_FLAGS   "-O0 ")
 
 set(TARGET_NAME   "panda")
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR})
 
 set(PANDA_SOURCES   src/main.f90 src/single_cell.f90)
 file(GLOB MOD_SRC      src/modules/*.f90)

@@ -9,7 +9,7 @@ subroutine single_cell
   implicit none
   integer :: it,ikz,ikr
   real(8) :: jz_intra,jz_inter,Etz,Eex,nex,nex_v,nex_r
-  real(8),allocatable :: nex_kz(:)
+  real(8),allocatable :: nex0th_kz(:),nex1st_kz(:),nex2nd_kz(:)
 
   if(Nprocs /= 1)call err_finalize("Parallelization is not supported &
     for single-cell calculation.")
@@ -28,7 +28,7 @@ subroutine single_cell
 
   open(21,file="Eex_nex.out")
   open(22,file="nex_k.out")
-  allocate(nex_kz(-NKz:NKz))
+  allocate(nex0th_kz(-NKz:NKz),nex1st_kz(-NKz:NKz),nex2nd_kz(-NKz:NKz))
 
   do it = 0,Nt
     write(*,*)'it=',it,'/',Nt
@@ -46,9 +46,10 @@ subroutine single_cell
     end if
 
     if(mod(it,500) == 0 .or. it == Nt)then
-      call excited_electron_k_resolved(nex_kz)
+      call excited_electron_k_resolved(nex0th_kz,nex1st_kz,nex2nd_kz,it)
       do ikz = -NKz, NKz,4
-        write(22,"(9999e26.16e3)")dt*(it+1),kz0(ikz)+Act(it+1),nex_kz(ikz)
+        write(22,"(9999e26.16e3)")dt*(it+1),kz0(ikz)+Act(it+1), &
+          nex0th_kz(ikz),nex1st_kz(ikz),nex2nd_kz(ikz)
       end do
         write(22,*)
     end if

@@ -108,9 +108,20 @@ subroutine calc_zDj
 
       do it = 0,Nt
         tt = dt*it + T0
+!== Start: full response ==
         ss1 = eps_tot*(tt-T0) - theta2*sin2w0_t_t0(it)
         ss2 = theta1*cosw0_t_t0(it)
         zDj(it) = zDj(it) + exp(-zI*ss1)*cos(ss2)*fact_xy(iepskxy)*fact_z(ikz)
+!== End:   full response ==
+
+!!== Start: full response (weak field limit) ==
+!        zDj(it) = zDj(it) + exp(-zI*eps_tot*(tt-T0)) &
+!          +exp(-zI*eps_kxyz*(tt-T0))*( &
+!          zI*theta2*sin2w0_t_t0(it) &
+!          -0.5d0*(theta1*cosw0_t_t0(it))**2 &
+!          )
+!!== End:   full response (weak field limit) ==
+
       end do
 
     end do

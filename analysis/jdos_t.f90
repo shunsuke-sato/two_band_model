@@ -71,13 +71,20 @@ subroutine init_tfunction
   integer :: it
 
   do it = 0, Nt
-    tt = dt*it + T0
-    sin2w0_t_t0(it) = sin(2d0*omega0*tt) - sin(2d0*omega0*T0)
-    cosw0_t_t0(it)  = cos(omega0*tt) - cos(omega0*T0)
+!! forward ==
+!    tt = dt*it + T0
+!    sin2w0_t_t0(it) = sin(2d0*omega0*tt) - sin(2d0*omega0*T0)
+!    cosw0_t_t0(it)  = cos(omega0*tt) - cos(omega0*T0)
+! midpoint ==
+    tt = dt*it
+    sin2w0_t_t0(it) = sin(2d0*omega0*(T0 + tt/2d0)) - sin(2d0*omega0*(T0-tt/2d0))
+    cosw0_t_t0(it)  = cos(omega0*(T0+tt/2d0)) - cos(omega0*(T0-tt/2d0))
+
+
 !    pow_cosw0_t_t0(it)  = (cos(omega0*tt) - cos(omega0*T0))**2
-    pow_cosw0_t_t0(it)  = 0.5d0 + cos(omega0*T0)**2 &
-                         -2d0*cos(omega0*tt)*cos(omega0*T0) &
-                         +0.5d0*cos(2d0*omega0*tt)
+!    pow_cosw0_t_t0(it)  = 0.5d0 + cos(omega0*T0)**2 &
+!                         -2d0*cos(omega0*tt)*cos(omega0*T0) &
+!                         +0.5d0*cos(2d0*omega0*tt)
   end do
 
 end subroutine init_tfunction

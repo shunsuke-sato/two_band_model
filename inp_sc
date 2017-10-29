@@ -3,7 +3,7 @@
 256  256    ! NKr, NKz
 6000 0.08d0   ! NT, dt
 "cos4cos"
-1d10 9d0  0.5d0  0d0 ! E0_1,omega_ev_1,tpulse_fs_1, CEP_2pi_1
+1d10 9d0  0.5d0  0d0 0d0 ! E0_1,omega_ev_1,tpulse_fs_1, CEP_2pi_1
 "cos2cos"
-0d10 40d0  0.5d0 0d0 ! E0_2,omega_ev_2,tpulse_fs_2,CEP_2pi_2
+0d10 40d0  0.5d0 0d0 0d0 ! E0_2,omega_ev_2,tpulse_fs_2,CEP_2pi_2
 0.0d0             ! Tdelay_fs

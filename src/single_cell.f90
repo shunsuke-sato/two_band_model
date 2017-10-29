@@ -18,9 +18,9 @@ subroutine single_cell
   read(*,*)NKr, NKz
   read(*,*)Nt,dt
   read(*,*)envelope_1
-  read(*,*)Iwcm2_1,omega_ev_1,tpulse_fs_1,CEP_2pi_1
+  read(*,*)Iwcm2_1,omega_ev_1,tpulse_fs_1,CEP_2pi_1,chirp_1
   read(*,*)envelope_2
-  read(*,*)Iwcm2_2,omega_ev_2,tpulse_fs_2,CEP_2pi_2
+  read(*,*)Iwcm2_2,omega_ev_2,tpulse_fs_2,CEP_2pi_2,chirp_2
   read(*,*)Tdelay_fs
 
   call preparation

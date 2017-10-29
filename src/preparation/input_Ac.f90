@@ -10,6 +10,7 @@ subroutine input_Ac
   integer :: it
   real(8) :: tt
   real(8) :: Es,Up,alpha
+  real(8) :: Et_tmp(-1:Nt+2), omega_tmp
 
   allocate(Act(-1:Nt+2),jtz(0:Nt+1),jtz_intra(0:Nt+1),jtz_inter(0:Nt+1))
   allocate(Act_pump(-1:Nt+2),Act_probe(-1:Nt+2) )
@@ -105,6 +106,18 @@ subroutine input_Ac
           *cos(pi*(tt-0.5d0*tpulse_1-Tdelay)/tpulse_2)**6 &
           *sin(omega_2*(tt-0.5d0*tpulse_1-Tdelay)+2d0*pi*CEP_2pi_2)
       end if
+    end do
+
+  case("chirped_gaussian")
+
+    do it = -1,Nt+2
+      tt = dt*dble(it) - 0.5d0*tpulse_1 - Tdelay
+      omega_tmp = omega_2 + chirp_2*tt
+      Et_tmp(it) = E0_2*sin(omega_tmp*tt +2d0*pi*CEP_2pi_2)*exp(-0.5d0*(tt/tpulse_2)**2)
+    end do
+
+    do it = 0,Nt+2
+      Act_probe(it) = Act_probe(it-1) - 0.5d0*dt*(Et_tmp(it)+Et_tmp(it-1))
     end do
 
   case default

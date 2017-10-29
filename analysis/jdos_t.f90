@@ -27,7 +27,7 @@ module global_variables
   integer,parameter :: Nt = 10000
   real(8),parameter :: dt = 0.02d0
   complex(8) :: zDj(0:Nt)
-  real(8) :: sin2w0_t_t0(0:Nt),cosw0_t_t0(0:Nt)
+  real(8) :: sin2w0_t_t0(0:Nt),cosw0_t_t0(0:Nt),pow_cosw0_t_t0(0:Nt)
 
 ! Fourier transform
   integer,parameter :: Nw = 2000
@@ -71,9 +71,20 @@ subroutine init_tfunction
   integer :: it
 
   do it = 0, Nt
-    tt = dt*it + T0
-    sin2w0_t_t0(it) = sin(2d0*omega0*tt) - sin(2d0*omega0*T0)
-    cosw0_t_t0(it)  = cos(omega0*tt) - cos(omega0*T0)
+!! forward ==
+!    tt = dt*it + T0
+!    sin2w0_t_t0(it) = sin(2d0*omega0*tt) - sin(2d0*omega0*T0)
+!    cosw0_t_t0(it)  = cos(omega0*tt) - cos(omega0*T0)
+! midpoint ==
+    tt = dt*it
+    sin2w0_t_t0(it) = sin(2d0*omega0*(T0 + tt/2d0)) - sin(2d0*omega0*(T0-tt/2d0))
+    cosw0_t_t0(it)  = cos(omega0*(T0+tt/2d0)) - cos(omega0*(T0-tt/2d0))
+
+
+!    pow_cosw0_t_t0(it)  = (cos(omega0*tt) - cos(omega0*T0))**2
+!    pow_cosw0_t_t0(it)  = 0.5d0 + cos(omega0*T0)**2 &
+!                         -2d0*cos(omega0*tt)*cos(omega0*T0) &
+!                         +0.5d0*cos(2d0*omega0*tt)
   end do
 
 end subroutine init_tfunction
@@ -108,9 +119,20 @@ subroutine calc_zDj
 
       do it = 0,Nt
         tt = dt*it + T0
+!== Start: full response ==
         ss1 = eps_tot*(tt-T0) - theta2*sin2w0_t_t0(it)
         ss2 = theta1*cosw0_t_t0(it)
         zDj(it) = zDj(it) + exp(-zI*ss1)*cos(ss2)*fact_xy(iepskxy)*fact_z(ikz)
+!== End:   full response ==
+
+!!== Start: full response (weak field limit) ==
+!        zDj(it) = zDj(it) + (exp(-zI*eps_tot*(tt-T0)) &
+!          +exp(-zI*eps_kxyz*(tt-T0))*( &
+!          zI*theta2*sin2w0_t_t0(it) &
+!          -0.5d0*theta1**2*pow_cosw0_t_t0(it) &
+!          ))*fact_xy(iepskxy)*fact_z(ikz)
+!!== End:   full response (weak field limit) ==
+
       end do
 
     end do

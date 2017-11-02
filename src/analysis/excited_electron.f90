@@ -19,7 +19,7 @@ subroutine excited_electron(nex1s,nex2nd,nex3rd,nex4th,it)
   real(8) :: lambda_2nd_v, lambda_2nd_c
   real(8) :: lambda_3rd_v, lambda_3rd_c
   real(8) :: lambda_4th_v, lambda_4th_c
-  real(8) :: xx, xx_dot, ff, ff_dot, eta, eta_dot
+  real(8) :: xx, xx_dot, xx_dot2, ff, ff_dot, eta, eta_dot, eta_dot2
   real(8) :: deps_dot(NKr,-NKz:NKz),deps_dot2(NKr,-NKz:NKz)
 
   Etz0 = -0.5d0*(Act(it+1)-Act(it-1))/dt
@@ -73,8 +73,9 @@ subroutine excited_electron(nex1s,nex2nd,nex3rd,nex4th,it)
 
     nex2nd = nex2nd+ abs(zy)**2*kr(ikr)
 
-! real carrier
-    eta = 2d0*piz_vc*Etz0/deps(ikr,ikz)
+! nex_3rd
+!    eta = 2d0*piz_vc*Etz0/deps(ikr,ikz)**2 ! new correct
+    eta = 2d0*piz_vc*Etz0/deps(ikr,ikz)  ! original wrong
     eta_dot = 2d0*piz_vc*(dEt_dt*deps(ikr,ikz) -2d0*Etz0*deps_dot(ikr,ikz) )/deps(ikr,ikz)**3
     xx = eta/(1d0 + sqrt(1d0 + eta**2))
     xx_dot = eta_dot/(1d0 + sqrt(1d0 + eta**2))/sqrt(1d0 + eta**2)
@@ -102,6 +103,8 @@ subroutine excited_electron(nex1s,nex2nd,nex3rd,nex4th,it)
 
     nex3rd = nex3rd+ abs(zy)**2*kr(ikr)
 
+! nex_4th
+    
 
   end do
   end do

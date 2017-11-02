@@ -20,7 +20,9 @@ subroutine excited_electron(nex1s,nex2nd,nex3rd,nex4th,it)
   real(8) :: lambda_3rd_v, lambda_3rd_c
   real(8) :: lambda_4th_v, lambda_4th_c
   real(8) :: xx, xx_dot, xx_dot2, ff, ff_dot, eta, eta_dot, eta_dot2
+  real(8) :: gamma, gamma_dot, gamma_dot2
   real(8) :: deps_dot(NKr,-NKz:NKz),deps_dot2(NKr,-NKz:NKz)
+
 
   Etz0 = -0.5d0*(Act(it+1)-Act(it-1))/dt
   dEt_dt = -(Act(it+1)-2d0*Act(it) + Act(it-1))/dt**2
@@ -104,6 +106,20 @@ subroutine excited_electron(nex1s,nex2nd,nex3rd,nex4th,it)
     nex3rd = nex3rd+ abs(zy)**2*kr(ikr)
 
 ! nex_4th
+    gamma      = piz_vc*Etz0/deps(ikr,ikz)
+    gamma_dot  = piz_vc*(dEt_dt*deps(ikr,ikz) -Etz0*deps_dot(ikr,ikz))/deps(ikr,ikz)**2
+    gamma_dot2 = piz_vc/deps(ikr,ikz)**3*( &
+      d2Et_dt2*deps(ikr,ikz)**2-Etz0*deps_dot(ikr,ikz)*deps_dot2(ikr,ikz) &
+      -2d0*dEt_dt*deps_dot(ikr,ikz)*deps(ikr,ikz) + 2d0*Etz0*deps_dot(ikr,ikz)**2 &
+      )
+    eta_dot2 = 2d0/deps(ikr,ikz)**4*( &
+      (gamma_dot2*deps(ikr,ikz)-gamma*deps_dot2(ikr,ikz))*deps(ikr,ikz)**2 &
+      -2d0*deps_dot2(ikr,ikz)*deps(ikr,ikz)&
+      *(gamma_dot*deps(ikr,ikz)-gamma*deps_dot(ikr,ikz)) &
+      )
+    xx_dot2 = eta_dot2*(1d0+eta**2+sqrt(1d0+eta**2)) &
+             -eta*eta_dot**2*(1d0+1d0/sqrt(1d0+eta**2))
+    xx_dot2 = xx_dot2/(1d0+eta**2+sqrt(1d0+eta**2))**2
     
 
   end do

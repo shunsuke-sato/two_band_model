@@ -21,8 +21,10 @@ subroutine excited_electron(nex1st,nex2nd,nex3rd,nex4th,it)
   real(8) :: lambda_4th_v, lambda_4th_c
   real(8) :: xx, xx_dot, xx_dot2, ff, ff_dot, eta, eta_dot, eta_dot2
   real(8) :: gamma, gamma_dot, gamma_dot2
-  real(8) :: gamma_2nd, deps_2nd, eta_2nd, eta_2nd_dot
-  real(8) :: yy
+  real(8) :: gamma_2nd, deps_2nd, gamma_2nd_dot, deps_2nd_dot
+  real(8) :: eta_2nd, eta_2nd_dot
+  real(8) :: yy, yy_dot
+  real(8) :: gamma_3rd, eta_3rd, deps_3rd, zz
   real(8) :: deps_dot(NKr,-NKz:NKz),deps_dot2(NKr,-NKz:NKz)
 
 
@@ -56,8 +58,11 @@ subroutine excited_electron(nex1st,nex2nd,nex3rd,nex4th,it)
 !$omp& eta,eta_dot,eta_dot2,xx,xx_dot,xx_dot2, &
 !$omp& lambda_2nd_v,lambda_2nd_c,ss,zeig_vec_2nd_v,zeig_vec_2nd_c, &
 !$omp& zx,zy,gamma_2nd,deps_2nd,eta_2nd,yy,& 
-!$omp& lambda_3rd_v,lambda_3rd_c,zeig_vec_3rd_v,zeig_vec_3rd_c) &
-!$omp& reduction(+:nex1st,nex2nd,nex3rd)
+!$omp& lambda_3rd_v,lambda_3rd_c,zeig_vec_3rd_v,zeig_vec_3rd_c,&
+!$omp& gamma_2nd_dot,deps_2nd_dot,eta_2nd_dot,yy_dot, &
+!$omp& gamma_3rd, deps_3rd, eta_3rd, zz, &
+!$omp& zeig_vec_4th_v, zeig_vec_4th_c) &
+!$omp& reduction(+:nex1st,nex2nd,nex3rd,nex4th)
   do ikz = -NKz,NKz
   do ikr = 1,NKr
 
@@ -114,6 +119,25 @@ subroutine excited_electron(nex1st,nex2nd,nex3rd,nex4th,it)
     zy = sum(conjg(zeig_vec_3rd_c(:))*zCt(:,ikr,ikz))
 
     nex3rd = nex3rd+ abs(zy)**2*kr(ikr)
+
+! nex_4th
+    gamma_2nd_dot = xx_dot2/(1d0+xx**2)-2d0*xx*gamma_2nd**2
+    deps_2nd_dot  = (deps(ikr,ikz)*deps_dot(ikr,ikz)+4d0*gamma*gamma_dot)/deps_2nd
+    eta_2nd_dot = 2d0*(gamma_2nd_dot*deps_2nd-gamma_2nd*deps_2nd_dot)/deps_2nd**2
+    yy_dot = -eta_2nd_dot/((1d0+sqrt(1d0+eta_2nd**2))*sqrt(1d0+eta_2nd**2))
+    gamma_3rd = yy_dot/(1d0+yy**2)
+    deps_3rd  = lambda_3rd_c - lambda_3rd_v
+    eta_3rd   = 2d0*gamma_3rd/deps_3rd
+    zz = eta_3rd/(1d0+sqrt(1d0+eta_3rd**2))
+
+    ss = 1d0/sqrt(1d0 + zz**2)
+
+    zeig_vec_4th_v =    zeig_vec_3rd_v*ss       + zI*zeig_vec_3rd_c*ss*zz
+    zeig_vec_4th_c = zI*zeig_vec_3rd_v*ss*zz    +    zeig_vec_3rd_c*ss
+
+    zy = sum(conjg(zeig_vec_4th_c(:))*zCt(:,ikr,ikz))
+
+    nex4th = nex4th+ abs(zy)**2*kr(ikr)
 
   end do
   end do

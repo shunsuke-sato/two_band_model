@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.8)
 project(PANDA Fortran)
 
 set(CMAKE_Fortran_COMPILER      "mpif90")
-set(CMAKE_Fortran_FLAGS   "-O0 ")
+set(CMAKE_Fortran_FLAGS   "-O0 -fopenmp")
 
 set(TARGET_NAME   "panda")
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR})

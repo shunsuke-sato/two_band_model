@@ -8,11 +8,24 @@ program main
   use mpi_module
   implicit none
   character(50) :: calc_mode
+!$  integer :: nthreads,omp_get_max_threads  
 
   call MPI_init(ierr)
   call MPI_COMM_SIZE(MPI_COMM_WORLD,Nprocs,ierr)
   call MPI_COMM_RANK(MPI_COMM_WORLD,Myrank,ierr)
   Time_start=MPI_WTIME()
+
+  if(myrank == 0)then
+!$  if(.false.) then
+    write(*,*)"parallel = Flat MPI"
+!$  else 
+!$    write(*,*)"# of MPI process = MPI+OMP Hybrid"
+    write(*,*)"# of MPI processes =",Nprocs
+!$  nthreads=omp_get_max_threads()
+!$  write(*,*)"# of OMP threads =",nthreads
+!$  end if
+  end if
+
 
   if(myrank == 0)read(*,*)calc_mode
   call MPI_BCAST(calc_mode,50,MPI_CHARACTER,0,MPI_COMM_WORLD,ierr)  

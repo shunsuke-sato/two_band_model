@@ -8,7 +8,8 @@ subroutine single_cell
   use global_variables
   implicit none
   integer :: it,ikz,ikr
-  real(8) :: jz_intra,jz_inter,Etz,Eex,nex,nex_v,nex_r
+  real(8) :: jz_intra,jz_inter,Etz,Eex
+  real(8) :: nex1st,nex2nd,nex3rd,nex4th
   real(8),allocatable :: nex0th_kz(:),nex1st_kz(:),nex2nd_kz(:)
 
   if(Nprocs /= 1)call err_finalize("Parallelization is not supported &
@@ -41,8 +42,8 @@ subroutine single_cell
 
     if(mod(it,100) == 0 .or. it == Nt)then
        call energy(Eex)
-       call excited_electron(nex,nex_v,nex_r,it+1)
-       write(21,"(999e26.16e3)")dt*(it+1),Eex,nex_v,nex,nex_r
+       call excited_electron(nex1st,nex2nd,nex3rd,nex4th,it+1)
+       write(21,"(999e26.16e3)")dt*(it+1),Eex,nex1st,nex2nd,nex3rd,nex4th
     end if
 
     if(mod(it,500) == 0 .or. it == Nt)then

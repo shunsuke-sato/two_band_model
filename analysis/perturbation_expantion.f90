@@ -19,7 +19,7 @@ module global_variables
   real(8),parameter :: eps_g = 42d0/(2d0*Ry)  !1.52d0/(2d0*Ry) 
   real(8),parameter :: mass_r = 0.067d0
 ! Discretization
-  integer,parameter :: Nepsk_xy = 256, NKz = 256
+  integer,parameter :: Nepsk_xy = 128, NKz = 128
   real(8),parameter :: eps_kxy_max = 0.5d0,eps_kz_max = 0.5d0
   real(8),parameter :: kz_max = sqrt(2d0*mass_r*eps_kz_max)
   real(8),parameter :: depskxy = eps_kxy_max/Nepsk_xy,dkz = kz_max/Nkz
@@ -48,7 +48,7 @@ end module global_variables
 program main
   use global_variables
   implicit none
-  integer :: it, ikz, iepskxy, iw
+  integer :: it, ikz, iepskxy, iw, nt_delay
   real(8) :: Up, theta2,pvc
   real(8) :: eps_kxy, eps_kz, eps_kxyz, kz
   real(8) :: ww
@@ -62,6 +62,12 @@ program main
   Up = E0**2/(4d0*mass_r*omega0**2)
 
   tt = 0d0
+  nt_delay = 16
+
+  do it = 0, nt_delay
+    tt = it*(2d0*pi/omega0)/dble(nt_delay)
+    
+
   zj3w = 0d0
 
   do iepskxy = 0, Nepsk_xy
@@ -100,7 +106,7 @@ program main
           (1d0/(ww-eps_kxyz-2d0*omega0+zI*gamma)-1d0/eps_kxyz)*zEw_2m
         zc3 = zc3 -0.5d0*Up/(ww-eps_kxyz-2d0*omega0+zi*gamma)*zEw_2m
         zc3 = zc3 -0.5d0*(0.5d0*theta2/eps_kxyz**2 - Up/eps_kxyz)* zEw_2m
-!
+!!
         zc3 = zc3*(-zI*pvc/eps_kxyz)/(ww-eps_kxyz+zI*gamma)
         zJ3w(iw) =  zJ3w(iw) + pvc*zc3
 
@@ -149,6 +155,8 @@ program main
   end do
 
   write(20,*)
+
+end do
 
   close(20)
 

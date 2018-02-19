@@ -162,7 +162,7 @@ subroutine excited_electron_ph_energy_resolved(it)
   nph_dns = 0d0
   do ikz = -NKz,NKz
      do ikr = 1,NKr
-        ieph = aint(Eph_max/dEph)
+        ieph = aint(deps(ikr,ikz)/dEph)
         nph_dns(ieph) = nph_dns(ieph) + nex1st_krz(ikr,ikz)
 
      end do

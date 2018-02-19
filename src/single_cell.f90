@@ -55,6 +55,9 @@ subroutine single_cell
         write(22,*)
     end if
 
+    if(it == Nt)then
+       call excited_electron_ph_energy_resolved(it)
+    end if
 
   end do
 

@@ -8,7 +8,8 @@ module global_variables
   real(8),parameter :: tau_z = 1d0, delta_gap = 0d0, velocity = 1d0
   integer,parameter :: nkx = 256, nky = 256
   real(8),parameter :: kx_max = 2d0, ky_max = 2d0
-  real(8) :: kx(nk),ky(nk)
+  real(8) :: kx(nkx),ky(nky)
+  real(8) :: dkx,dky
   complex(8) :: zpsi(2,nkx,nky)
 
 ! time propagation
@@ -37,19 +38,21 @@ subroutine init
   real(8) :: kxt, kyt
 
   do ikx = 1,nkx
-    kx(ik) = -kx_max + 2d0*kx_max*dble(ikx-1)/dble(nkx-1)
+    kx(ikx) = -kx_max + 2d0*kx_max*dble(ikx-1)/dble(nkx-1)
   end do
+  dkx = 2d0*kx_max/dble(nkx-1)
 
   do iky = 1,nky
-    ky(ik) = -ky_max + 2d0*ky_max*dble(iky-1)/dble(nky-1)
+    ky(iky) = -ky_max + 2d0*ky_max*dble(iky-1)/dble(nky-1)
   end do
+  dky = 2d0*ky_max/dble(nky-1)
 
   if(delta_gap == 0d0)then ! Dirac cone
     do ikx = 1, nkx
       kxt = kx(ikx)
       do iky = 1,nky
         kyt = ky(iky)
-        zpsi(1,ikx,iky) = -(tau_z*kxt-zI*kyt)/sqrt(2d0*(kx**2+ky**2))
+        zpsi(1,ikx,iky) = -(tau_z*kxt-zI*kyt)/sqrt(2d0*(kxt**2+kyt**2))
         zpsi(2,ikx,iky) = 1d0/sqrt(2d0)
       end do
     end do
@@ -63,10 +66,12 @@ end subroutine init
 subroutine time_propagation
   use global_variables
   implicit none
+  real(8) :: jxy(2)
   integer :: it
 
   do it = 0,nt-1
     call dt_evolve(it)
+    call current(jxy(:),it)
   end do
 
 
@@ -122,7 +127,7 @@ subroutine dt_evolve(it)
 
       zpsi(:,ikx,iky) = zpsi(:,ikx,iky) -zI*dt/6d0*( &
         zpsi_t(:,1) + 2d0*zpsi_t(:,2) + 2d0*zpsi_t(:,3) + zpsi_t(:,4) )
-
+      
     end do
   end do
   
@@ -140,6 +145,44 @@ subroutine init_ac
 
 end subroutine init_ac
 !----------------------------------------------------------------------------------------!
+subroutine current(jxy,it)
+  use global_variables
+  implicit none
+  real(8) :: jxy(2)
+  integer :: it
+  integer :: ikx, iky
+  real(8) :: kxt, kyt
+  real(8) :: jxt,jyt,jx0,jy0,xx
+  complex(8) :: zs
+
+  jxy = 0d0
+
+  do ikx = 1,nkx
+    do iky = 1,nky
+
+       kxt = kx(ikx) + ac(1,it)
+       kyt = kx(iky) + ac(2,it)
+       
+       jxt = real(zpsi(1,ikx,iky)*conjg(zpsi(2,ikx,iky)))
+       jyt = real(zI*zpsi(1,ikx,iky)*conjg(zpsi(2,ikx,iky)))
+       
+       zs = -velocity*(tau_z*kxt-zI*kyt)&
+            /(delta_gap*0.5d0&
+            +sqrt(delta_gap**2*0.25d0+velocity**2*(kxt**2+kyt**2)))
+       
+       xx = abs(zs)**2
+       jx0 =  2d0/(1d0+xx)*real(zs)
+       jy0 = -2d0/(1d0+xx)*aimag(zs)
+       
+       jxy(1) = jxy(1) + jxt - jx0
+       jxy(2) = jxy(2) + jyt - jy0
+       
+     end do
+  end do
+
+  jxy = jxy*dkx*dky
+
+end subroutine current
 !----------------------------------------------------------------------------------------!
 !----------------------------------------------------------------------------------------!
 !----------------------------------------------------------------------------------------!

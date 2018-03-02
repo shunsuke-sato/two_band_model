@@ -3,9 +3,11 @@ module global_variables
   real(8),parameter :: pi = 4d0*atan(1d0)
   complex(8),parameter :: zi = (0d0,1d0)
   real(8),parameter :: fs = 0.024189d0
+  real(8),parameter :: ev = 27.2114d0
+  real(8),parameter :: b_a = 0.529d0
 
 ! material parameters
-  real(8),parameter :: tau_z = 1d0, delta_gap = 0d0, velocity = 1d0
+  real(8),parameter :: tau_z = 1d0, delta_gap = 0d0, velocity = 0.5d0
   integer,parameter :: nkx = 256, nky = 256
   real(8),parameter :: kx_max = 2d0, ky_max = 2d0
   real(8) :: kx(nkx),ky(nky)
@@ -13,7 +15,7 @@ module global_variables
   complex(8) :: zpsi(2,nkx,nky)
 
 ! time propagation
-  real(8),parameter :: Tprop = 20d0/fs, dt = 0.08d0
+  real(8),parameter :: Tprop = 100d0/fs, dt = 0.08d0
   integer,parameter :: nt = aint(Tprop/dt)+1
 
   real(8) :: jt(2,0:nt), ac(2,0:nt), ac_dt2(2,0:nt)
@@ -69,10 +71,16 @@ subroutine time_propagation
   real(8) :: jxy(2)
   integer :: it
 
+  open(21,file="current.out")
+  call current(jxy(:),0)
+  write(21,"(999e26.16e3)")0d0,ac(:,0),jxy
   do it = 0,nt-1
+    if(mod(it,max(100,nt/100)) == 0)write(*,*)"it=",it,nt
     call dt_evolve(it)
     call current(jxy(:),it)
+    write(21,"(999e26.16e3)")dt*(it+1),ac(:,it+1),jxy
   end do
+  close(21)
 
 
 end subroutine time_propagation
@@ -138,9 +146,30 @@ subroutine init_ac
   use global_variables
   implicit none
   integer :: it
+  real(8) :: tt
+  real(8) :: E0,omega,tpulse
+
+  E0 = 1d7*b_a*1d-10/ev
+  omega = 0.3d0/ev
+  tpulse = 100d0/fs
 
   ac = 0d0
   ac_dt2 = 0d0
+
+  do it = 0,nt
+
+     tt = dt*it
+     if( abs(tt-0.5d0*tpulse)<0.5d0*tpulse )then
+        ac(1,it) = ac(1,it) - E0/omega*cos(pi*(tt-0.5d0*tpulse)/tpulse)**2*sin(omega*(tt-0.5d0*tpulse))
+     end if
+
+     tt = dt*it + dt/2d0
+     if( abs(tt-0.5d0*tpulse)<0.5d0*tpulse )then
+        ac_dt2(1,it) = ac_dt2(1,it) - E0/omega*cos(pi*(tt-0.5d0*tpulse)/tpulse)**2*sin(omega*(tt-0.5d0*tpulse))
+     end if
+
+     
+  end do
 
 
 end subroutine init_ac

@@ -153,8 +153,8 @@ subroutine init_ac
   real(8) :: E0,omega,tpulse
 
   E0 = 1d7*b_a*1d-10/ev
-  omega = 0.3d0/ev
-  tpulse = 100d0/fs
+  omega = 0.19074d0/ev ! 6.5 micron
+  tpulse = 2d3/fs
 
   ac = 0d0
   ac_dt2 = 0d0

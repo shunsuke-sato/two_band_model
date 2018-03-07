@@ -149,19 +149,39 @@ subroutine init_ac
   use global_variables
   implicit none
   integer :: it
-  real(8) :: tt
+  real(8) :: tt,tt2
   real(8) :: E0,omega,tpulse
+  real(8) :: E_SD, T_SD
 
   E0 = 1d7*b_a*1d-10/ev
   omega = 0.19074d0/ev ! 6.5 micron
   tpulse = 2d3/fs
+
+! Source-drain
+  E_SD = 1d-4
+  T_SD = 10d0/fs
 
   ac = 0d0
   ac_dt2 = 0d0
 
   do it = 0,nt
 
-     tt = dt*it
+    tt = dt*it
+    tt2 = dt*it + 0.5d0*dt
+
+! source-drain
+    if(tt<T_SD)then
+      ac(1,it) = ac(1,it) - E_SD*(tt/2d0 - T_SD/(2d0*pi)*sin(pi*tt/T_SD))
+    else
+      ac(1,it) = ac(1,it) - E_SD*(tt - T_SD/2d0)
+    end if
+    if(tt2<T_SD)then
+      ac_dt2(1,it) = ac_dt2(1,it) - E_SD*(tt2/2d0 - T_SD/(2d0*pi)*sin(pi*tt2/T_SD))
+    else
+      ac_dt2(1,it) = ac_dt2(1,it) - E_SD*(tt2 - T_SD/2d0)
+    end if
+
+
      if( abs(tt-0.5d0*tpulse)<0.5d0*tpulse )then
         ac(1,it) = ac(1,it) - E0/omega*cos(pi*(tt-0.5d0*tpulse)/tpulse)**2*sin(omega*(tt-0.5d0*tpulse))
      end if

@@ -5,9 +5,12 @@ module global_variables
   real(8),parameter :: fs = 0.024189d0
   real(8),parameter :: ev = 27.2114d0
   real(8),parameter :: b_a = 0.529d0
+  real(8),parameter :: clight = 137.035999139d0
 
 ! material parameters
-  real(8),parameter :: tau_z = 1d0, delta_gap = 0d0, velocity = 0.5d0
+  real(8),parameter :: tau_z = 1d0, delta_gap = 0d0
+! Fermi velocity of graphene PRL 101, 226405 (2008).
+  real(8),parameter :: velocity = clight*1.12d6/299792458d0
   integer,parameter :: nkx = 256, nky = 256
   real(8),parameter :: kx_max = 2d0, ky_max = 2d0
   real(8) :: kx(nkx),ky(nky)

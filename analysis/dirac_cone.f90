@@ -149,7 +149,7 @@ subroutine init_ac
   use global_variables
   implicit none
   integer :: it
-  real(8) :: tt,tt2
+  real(8) :: tt,tt2, xx, xx2
   real(8) :: E0,omega,tpulse
   real(8) :: E_SD, T_SD
 
@@ -181,6 +181,8 @@ subroutine init_ac
       ac_dt2(1,it) = ac_dt2(1,it) - E_SD*(tt2 - T_SD/2d0)
     end if
 
+! circular laser
+    xx = tt - T_SD - 0.5d0*tpulse
 
      if( abs(tt-0.5d0*tpulse)<0.5d0*tpulse )then
         ac(1,it) = ac(1,it) - E0/omega*cos(pi*(tt-0.5d0*tpulse)/tpulse)**2*sin(omega*(tt-0.5d0*tpulse))

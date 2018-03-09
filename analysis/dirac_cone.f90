@@ -11,14 +11,14 @@ module global_variables
   real(8),parameter :: tau_z = 1d0, delta_gap = 0d0
 ! Fermi velocity of graphene PRL 101, 226405 (2008).
   real(8),parameter :: velocity = clight*1.12d6/299792458d0
-  integer,parameter :: nkx = 256, nky = 256
-  real(8),parameter :: kx_max = 2d0, ky_max = 2d0
+  integer,parameter :: nkx = 32, nky = 32
+  real(8),parameter :: kx_max = 1d0, ky_max = 1d0
   real(8) :: kx(nkx),ky(nky)
   real(8) :: dkx,dky
   complex(8) :: zpsi(2,nkx,nky)
 
 ! time propagation
-  real(8),parameter :: Tprop = 100d0/fs, dt = 0.08d0
+  real(8),parameter :: Tprop = 2.2d3/fs, dt = 0.08d0
   integer,parameter :: nt = aint(Tprop/dt)+1
 
   real(8) :: jt(2,0:nt), ac(2,0:nt), ac_dt2(2,0:nt)

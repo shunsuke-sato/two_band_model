@@ -183,16 +183,17 @@ subroutine init_ac
 
 ! circular laser
     xx = tt - T_SD - 0.5d0*tpulse
+    xx2 = tt2 - T_SD - 0.5d0*tpulse
 
-     if( abs(tt-0.5d0*tpulse)<0.5d0*tpulse )then
-        ac(1,it) = ac(1,it) - E0/omega*cos(pi*(tt-0.5d0*tpulse)/tpulse)**2*sin(omega*(tt-0.5d0*tpulse))
+     if( abs(xx)<0.5d0*tpulse )then
+        ac(1,it) = ac(1,it) - E0/omega*cos(pi*xx/tpulse)**2*sin(omega*xx)
+        ac(2,it) = ac(2,it) - E0/omega*cos(pi*xx/tpulse)**2*sin(omega*xx)
      end if
 
-     tt = dt*it + dt/2d0
-     if( abs(tt-0.5d0*tpulse)<0.5d0*tpulse )then
-        ac_dt2(1,it) = ac_dt2(1,it) - E0/omega*cos(pi*(tt-0.5d0*tpulse)/tpulse)**2*sin(omega*(tt-0.5d0*tpulse))
+     if( abs(xx2)<0.5d0*tpulse )then
+        ac_dt2(1,it) = ac_dt2(1,it) - E0/omega*cos(pi*xx2/tpulse)**2*sin(omega*xx)
+        ac_dt2(2,it) = ac_dt2(2,it) - E0/omega*cos(pi*xx2/tpulse)**2*sin(omega*xx)
      end if
-
      
   end do
 

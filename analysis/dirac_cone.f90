@@ -207,8 +207,8 @@ subroutine current(jxy,it)
   use global_variables
   implicit none
   real(8),intent(out) :: jxy(2)
+  integer,intent(in) :: it
   real(8) :: jx,jy
-  integer :: it
   integer :: ikx, iky
   real(8) :: kxt, kyt
   real(8) :: jxt,jyt,jx0,jy0,xx
@@ -217,6 +217,8 @@ subroutine current(jxy,it)
   jx = 0d0
   jy = 0d0
 
+!$omp parallel default(shared), private(ikx,iky,kxt,kyt,jxt,jyt,zs,xx,jx0,jy0) 
+!$omp do reduction(+:jx,jy) collapse(2)
   do ikx = 1,nkx
     do iky = 1,nky
 
@@ -239,6 +241,8 @@ subroutine current(jxy,it)
        
      end do
   end do
+!$omp end do
+!$omp end parallel  
 
   jxy(1) = jx*dkx*dky
   jxy(2) = jy*dkx*dky

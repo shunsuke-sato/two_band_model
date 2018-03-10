@@ -190,12 +190,12 @@ subroutine init_ac
 
      if( abs(xx)<0.5d0*tpulse )then
         ac(1,it) = ac(1,it) - E0/omega*cos(pi*xx/tpulse)**2*sin(omega*xx)
-        ac(2,it) = ac(2,it) - E0/omega*cos(pi*xx/tpulse)**2*sin(omega*xx)
+        ac(2,it) = ac(2,it) - E0/omega*cos(pi*xx/tpulse)**2*cos(omega*xx)
      end if
 
      if( abs(xx2)<0.5d0*tpulse )then
         ac_dt2(1,it) = ac_dt2(1,it) - E0/omega*cos(pi*xx2/tpulse)**2*sin(omega*xx)
-        ac_dt2(2,it) = ac_dt2(2,it) - E0/omega*cos(pi*xx2/tpulse)**2*sin(omega*xx)
+        ac_dt2(2,it) = ac_dt2(2,it) - E0/omega*cos(pi*xx2/tpulse)**2*cos(omega*xx)
      end if
      
   end do

@@ -95,6 +95,8 @@ subroutine dt_evolve(it)
   real(8) :: kxt, kyt
   complex(8) :: zpsi_t(2,0:4)
 
+!$omp parallel default(shared), private(ikx,iky,kxt,kyt,zpsi_t) 
+!$omp do collapse(2)
   do ikx = 1,nkx
     do iky = 1,nky
 
@@ -141,7 +143,8 @@ subroutine dt_evolve(it)
       
     end do
   end do
-  
+!$omp end do
+!$omp end parallel  
 
 end subroutine dt_evolve
 !----------------------------------------------------------------------------------------!

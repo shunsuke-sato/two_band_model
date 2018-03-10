@@ -161,7 +161,7 @@ subroutine init_ac
   tpulse = 2d3/fs
 
 ! Source-drain
-  E_SD = 1d-4
+  E_SD = 1d-6
   T_SD = 10d0/fs
 
   ac = 0d0

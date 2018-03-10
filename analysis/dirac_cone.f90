@@ -206,14 +206,16 @@ end subroutine init_ac
 subroutine current(jxy,it)
   use global_variables
   implicit none
-  real(8) :: jxy(2)
+  real(8),intent(out) :: jxy(2)
+  real(8) :: jx,jy
   integer :: it
   integer :: ikx, iky
   real(8) :: kxt, kyt
   real(8) :: jxt,jyt,jx0,jy0,xx
   complex(8) :: zs
 
-  jxy = 0d0
+  jx = 0d0
+  jy = 0d0
 
   do ikx = 1,nkx
     do iky = 1,nky
@@ -232,13 +234,14 @@ subroutine current(jxy,it)
        jx0 =  2d0/(1d0+xx)*real(zs)
        jy0 = -2d0/(1d0+xx)*aimag(zs)
        
-       jxy(1) = jxy(1) + jxt - jx0
-       jxy(2) = jxy(2) + jyt - jy0
+       jx = jx + jxt - jx0
+       jy = jy + jyt - jy0
        
      end do
   end do
 
-  jxy = jxy*dkx*dky
+  jxy(1) = jx*dkx*dky
+  jxy(2) = jy*dkx*dky
 
 end subroutine current
 !----------------------------------------------------------------------------------------!

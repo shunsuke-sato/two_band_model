@@ -203,8 +203,8 @@ subroutine init_ac
      end if
 
      if( abs(xx2)<0.5d0*tpulse )then
-        ac_dt2(1,it) = ac_dt2(1,it) - E0/omega*cos(pi*xx2/tpulse)**2*sin(omega*xx)
-        ac_dt2(2,it) = ac_dt2(2,it) - E0/omega*cos(pi*xx2/tpulse)**2*cos(omega*xx)
+        ac_dt2(1,it) = ac_dt2(1,it) - E0/omega*cos(pi*xx2/tpulse)**2*sin(omega*xx2)
+        ac_dt2(2,it) = ac_dt2(2,it) - E0/omega*cos(pi*xx2/tpulse)**2*cos(omega*xx2)
      end if
      
   end do

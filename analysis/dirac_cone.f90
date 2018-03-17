@@ -155,10 +155,19 @@ subroutine init_ac
   real(8) :: tt,tt2, xx, xx2
   real(8) :: E0,omega,tpulse
   real(8) :: E_SD, T_SD
+  real(8) :: gap_Floquet
 
-  E0 = 1d7*b_a*1d-10/ev
+
+  gap_Floquet = 0.1d0/ev
+!  E0 = 1d7*b_a*1d-10/ev
   omega = 0.19074d0/ev ! 6.5 micron
   tpulse = 2d3/fs
+
+  E0 = omega*0.5d0/velocity*sqrt( &
+    (gap_Floquet + omega)**2 - omega**2 &
+    )
+
+  write(*,"(A,2x,e26.16e3,A)")"Field strength =",E0*ev/b_a*1d10, "eV/m"
 
 ! Source-drain
   E_SD = 1d-6

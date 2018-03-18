@@ -232,7 +232,7 @@ subroutine current(jxy,it)
     do iky = 1,nky
 
        kxt = kx(ikx) + ac(1,it)
-       kyt = kx(iky) + ac(2,it)
+       kyt = ky(iky) + ac(2,it)
        
        jxt = real(zpsi(1,ikx,iky)*conjg(zpsi(2,ikx,iky)))
        jyt = real(zI*zpsi(1,ikx,iky)*conjg(zpsi(2,ikx,iky)))

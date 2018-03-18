@@ -101,7 +101,7 @@ subroutine dt_evolve(it)
     do iky = 1,nky
 
       kxt = kx(ikx) + ac(1,it)
-      kyt = kx(iky) + ac(2,it)
+      kyt = ky(iky) + ac(2,it)
 ! RK1
       zpsi_t(:,0) = zpsi(:,ikx,iky)
       zpsi_t(1,1) = 0.5d0*delta_gap*zpsi_t(1,0) &
@@ -110,7 +110,7 @@ subroutine dt_evolve(it)
         - 0.5d0*delta_gap*zpsi_t(2,0)
 
       kxt = kx(ikx) + ac_dt2(1,it)
-      kyt = kx(iky) + ac_dt2(2,it)
+      kyt = ky(iky) + ac_dt2(2,it)
 ! RK2
       zpsi_t(:,0) = zpsi(:,ikx,iky) - zI*0.5d0*dt*zpsi_t(:,1)
 
@@ -128,7 +128,7 @@ subroutine dt_evolve(it)
         - 0.5d0*delta_gap*zpsi_t(2,0)
 
       kxt = kx(ikx) + ac(1,it+1)
-      kyt = kx(iky) + ac(2,it+1)
+      kyt = ky(iky) + ac(2,it+1)
 
 ! RK4
       zpsi_t(:,0) = zpsi(:,ikx,iky) - zI*dt*zpsi_t(:,3)

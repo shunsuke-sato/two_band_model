@@ -103,7 +103,8 @@ subroutine dt_evolve_Magnus(it)
   real(8) :: acy0, acy1, acy2
   integer :: ikx, iky
   real(8) :: kxt, kyt,kxt_eff, kyt_eff
-  complex(8) :: zHeff(2,2)
+  real(8) :: delta,lambda(2)
+  complex(8) :: zHeff(2,2),zalpha,zx,zvec(2,2)
   real(8) :: const,ss
 
   acx0 = ac(1,it)
@@ -124,10 +125,43 @@ subroutine dt_evolve_Magnus(it)
       kyt_eff = kyt + 0.5d0*dt*acy1 + dt**2/6d0*acy2
       
       ss = kxt*acy1-acx1*kyt
-      zHeff(1,1) =  const*ss
-      zHeff(2,1) =  velocity*(tau_z*kxt_eff + zI*kyt_eff)
-      zHeff(1,2) =  velocity*(tau_z*kxt_eff - zI*kyt_eff)
-      zHeff(2,2) = -const*ss
+!      zHeff(1,1) =  const*ss
+!      zHeff(2,1) =  velocity*(tau_z*kxt_eff + zI*kyt_eff)
+!      zHeff(1,2) =  velocity*(tau_z*kxt_eff - zI*kyt_eff)
+!      zHeff(2,2) = -const*ss
+
+      delta  = const*ss
+      zalpha = velocity*(tau_z*kxt_eff + zI*kyt_eff)
+!
+      if(delta >= 0d0)then
+        
+! vector 1
+        lambda(1) = sqrt(delta**2 + abs(zalpha)**2)
+        zx = zalpha/(lambda(1) + delta)
+        ss = 1d0/sqrt(1d0 + abs(zs)**2)
+        zvec(1,1) = ss
+        zvec(2,1) = ss*zs
+
+! vector 2
+        lambda(2) = -lambda(1)
+        zvec(1,2) = -ss*conjg(zs)
+        zvec(2,2) =  ss
+
+      else
+
+! vector 1
+        lambda(1) = sqrt(delta**2 + abs(zalpha)**2)
+        zx = conjg(zalpha)/(lambda(1) - delta)
+        ss = 1d0/sqrt(1d0 + abs(zs)**2)
+        zvec(1,1) = ss*zs
+        zvec(2,1) = ss
+
+! vector 2
+        lambda(2) = -lambda(1)
+        zvec(1,2) =  ss
+        zvec(2,2) = -ss*conjg(zs)
+
+      end if
 
 
     end do

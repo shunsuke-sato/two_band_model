@@ -120,10 +120,14 @@ subroutine dt_evolve_Magnus(it)
 
   const = -dt**2/6d0*tau_z*velocity**2
 
+
+!$omp parallel default(shared), private(ikx,iky,kxt,kyt,kxt_eff,kyt_eff,ss,delta,zalpha, &
+!$omp & lambda,zx,zvec,zc) 
+!$omp do collapse(2)
   do ikx = 1,nkx
-    kxt = kx(ikx) + acx0
-    kxt_eff = kxt + 0.5d0*dt*acx1 + dt**2/6d0*acx2
     do iky = 1,nky
+      kxt = kx(ikx) + acx0
+      kxt_eff = kxt + 0.5d0*dt*acx1 + dt**2/6d0*acx2
       kyt = ky(iky) + acy0
       kyt_eff = kyt + 0.5d0*dt*acy1 + dt**2/6d0*acy2
       
@@ -180,7 +184,8 @@ subroutine dt_evolve_Magnus(it)
 
     end do
   end do
-
+!$omp end do
+!$omp end parallel  
 
 end subroutine dt_evolve_Magnus
 !----------------------------------------------------------------------------------------!

@@ -92,7 +92,11 @@ subroutine dt_evolve(it)
   implicit none
   integer,intent(inout) :: it
 
-  call dt_evolve_Taylor(it)
+!  call dt_evolve_Taylor(it)
+!  call dt_evolve_Magnus(it)
+  call dt_evolve_Magnus_1st(it)
+
+
 end subroutine dt_evolve
 !----------------------------------------------------------------------------------------!
 subroutine dt_evolve_Magnus(it)
@@ -188,6 +192,76 @@ subroutine dt_evolve_Magnus(it)
 !$omp end parallel  
 
 end subroutine dt_evolve_Magnus
+!----------------------------------------------------------------------------------------!
+subroutine dt_evolve_Magnus_1st(it)
+  use global_variables
+  implicit none
+  integer,intent(in) :: it
+  real(8) :: acx0, acx1, acx2
+  real(8) :: acy0, acy1, acy2
+  integer :: ikx, iky
+  real(8) :: kxt, kyt,kxt_eff, kyt_eff
+  real(8) :: delta,lambda(2)
+  complex(8) :: zHeff(2,2),zalpha,zx,zvec(2,2),zc(2)
+  real(8) :: const,ss
+
+
+  if(delta_gap /= 0d0)stop 'delta_gap has to be zero in Magnus propagator.'
+
+  acx0 = ac(1,it)
+  acx2 = (ac(1,it)-2d0*ac_dt2(1,it)+ac(1,it+1))/(0.5d0*dt)**2
+  acx1 = (ac(1,it+1)-acx0-0.5d0*dt**2*acx2)/dt
+
+  acy0 = ac(2,it)
+  acy2 = (ac(2,it)-2d0*ac_dt2(2,it)+ac(2,it+1))/(0.5d0*dt)**2
+  acy1 = (ac(2,it+1)-acy0-0.5d0*dt**2*acy2)/dt
+
+  delta = 0d0
+
+
+!$omp parallel default(shared), private(ikx,iky,kxt,kyt,kxt_eff,kyt_eff,ss,zalpha, &
+!$omp & lambda,zx,zvec,zc) 
+!$omp do collapse(2)
+  do ikx = 1,nkx
+    do iky = 1,nky
+      kxt = kx(ikx) + acx0
+      kxt_eff = kxt + 0.5d0*dt*acx1 + dt**2/6d0*acx2
+      kyt = ky(iky) + acy0
+      kyt_eff = kyt + 0.5d0*dt*acy1 + dt**2/6d0*acy2
+      
+      zalpha = velocity*(tau_z*kxt_eff + zI*kyt_eff)
+!
+! vector 1
+      lambda(1) = sqrt(delta**2 + abs(zalpha)**2)
+      zx = zalpha/(lambda(1) + delta)
+      ss = 1d0/sqrt(1d0 + abs(zx)**2)
+      zvec(1,1) = ss
+      zvec(2,1) = ss*zx
+
+! vector 2
+      lambda(2) = -lambda(1)
+      zvec(1,2) = -ss*conjg(zx)
+      zvec(2,2) =  ss
+
+
+! projection
+      zc(1) = conjg(zvec(1,1))*zpsi(1,ikx,iky) + conjg(zvec(2,1))*zpsi(2,ikx,iky)
+      zc(2) = conjg(zvec(1,2))*zpsi(1,ikx,iky) + conjg(zvec(2,2))*zpsi(2,ikx,iky)
+
+! propagation
+      zc(1) = zc(1)*exp(-zI*lambda(1)*dt)
+      zc(2) = zc(2)*exp(-zI*lambda(2)*dt)
+
+! update wavefunction
+      zpsi(:,ikx,iky) = zc(1)*zvec(:,1) + zc(2)*zvec(:,2)
+      
+
+    end do
+  end do
+!$omp end do
+!$omp end parallel  
+
+end subroutine dt_evolve_Magnus_1st
 !----------------------------------------------------------------------------------------!
 subroutine dt_evolve_Taylor(it)
   use global_variables

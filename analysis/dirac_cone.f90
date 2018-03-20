@@ -101,7 +101,7 @@ subroutine dt_evolve(it)
     do iky = 1,nky
 
       kxt = kx(ikx) + ac(1,it)
-      kyt = kx(iky) + ac(2,it)
+      kyt = ky(iky) + ac(2,it)
 ! RK1
       zpsi_t(:,0) = zpsi(:,ikx,iky)
       zpsi_t(1,1) = 0.5d0*delta_gap*zpsi_t(1,0) &
@@ -110,7 +110,7 @@ subroutine dt_evolve(it)
         - 0.5d0*delta_gap*zpsi_t(2,0)
 
       kxt = kx(ikx) + ac_dt2(1,it)
-      kyt = kx(iky) + ac_dt2(2,it)
+      kyt = ky(iky) + ac_dt2(2,it)
 ! RK2
       zpsi_t(:,0) = zpsi(:,ikx,iky) - zI*0.5d0*dt*zpsi_t(:,1)
 
@@ -128,7 +128,7 @@ subroutine dt_evolve(it)
         - 0.5d0*delta_gap*zpsi_t(2,0)
 
       kxt = kx(ikx) + ac(1,it+1)
-      kyt = kx(iky) + ac(2,it+1)
+      kyt = ky(iky) + ac(2,it+1)
 
 ! RK4
       zpsi_t(:,0) = zpsi(:,ikx,iky) - zI*dt*zpsi_t(:,3)
@@ -155,10 +155,19 @@ subroutine init_ac
   real(8) :: tt,tt2, xx, xx2
   real(8) :: E0,omega,tpulse
   real(8) :: E_SD, T_SD
+  real(8) :: gap_Floquet
 
-  E0 = 1d7*b_a*1d-10/ev
+
+  gap_Floquet = 0.1d0/ev
+!  E0 = 1d7*b_a*1d-10/ev
   omega = 0.19074d0/ev ! 6.5 micron
   tpulse = 2d3/fs
+
+  E0 = omega*0.5d0/velocity*sqrt( &
+    (gap_Floquet + omega)**2 - omega**2 &
+    )
+
+  write(*,"(A,2x,e26.16e3,A)")"Field strength =",E0*ev/b_a*1d10, "eV/m"
 
 ! Source-drain
   E_SD = 1d-6
@@ -194,8 +203,8 @@ subroutine init_ac
      end if
 
      if( abs(xx2)<0.5d0*tpulse )then
-        ac_dt2(1,it) = ac_dt2(1,it) - E0/omega*cos(pi*xx2/tpulse)**2*sin(omega*xx)
-        ac_dt2(2,it) = ac_dt2(2,it) - E0/omega*cos(pi*xx2/tpulse)**2*cos(omega*xx)
+        ac_dt2(1,it) = ac_dt2(1,it) - E0/omega*cos(pi*xx2/tpulse)**2*sin(omega*xx2)
+        ac_dt2(2,it) = ac_dt2(2,it) - E0/omega*cos(pi*xx2/tpulse)**2*cos(omega*xx2)
      end if
      
   end do
@@ -223,7 +232,7 @@ subroutine current(jxy,it)
     do iky = 1,nky
 
        kxt = kx(ikx) + ac(1,it)
-       kyt = kx(iky) + ac(2,it)
+       kyt = ky(iky) + ac(2,it)
        
        jxt = real(zpsi(1,ikx,iky)*conjg(zpsi(2,ikx,iky)))
        jyt = real(zI*zpsi(1,ikx,iky)*conjg(zpsi(2,ikx,iky)))

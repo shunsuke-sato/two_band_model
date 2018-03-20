@@ -89,7 +89,16 @@ subroutine time_propagation
 end subroutine time_propagation
 !----------------------------------------------------------------------------------------!
 subroutine dt_evolve(it)
+  implicit none
+  integer,intent(inout) :: it
+
+  call dt_evolve_Taylor(it)
+end subroutine dt_evolve
+  
+!----------------------------------------------------------------------------------------!
+subroutine dt_evolve_Taylor(it)
   use global_variables
+  implicit none
   integer,intent(in) :: it
   integer :: ikx, iky
   real(8) :: kxt, kyt
@@ -146,7 +155,7 @@ subroutine dt_evolve(it)
 !$omp end do
 !$omp end parallel  
 
-end subroutine dt_evolve
+end subroutine dt_evolve_Taylor
 !----------------------------------------------------------------------------------------!
 subroutine init_ac
   use global_variables

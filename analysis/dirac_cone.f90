@@ -101,6 +101,10 @@ subroutine dt_evolve_Magnus(it)
   integer,intent(in) :: it
   real(8) :: acx0, acx1, acx2
   real(8) :: acy0, acy1, acy2
+  integer :: ikx, iky
+  real(8) :: kxt, kyt,kxt_eff, kyt_eff
+  complex(8) :: zHeff(2,2)
+  real(8) :: const,ss
 
   acx0 = ac(1,it)
   acx2 = (ac(1,it)-2d0*ac_dt2(1,it)+ac(1,it+1))/(0.5d0*dt)**2
@@ -110,6 +114,24 @@ subroutine dt_evolve_Magnus(it)
   acy2 = (ac(2,it)-2d0*ac_dt2(2,it)+ac(2,it+1))/(0.5d0*dt)**2
   acy1 = (ac(2,it+1)-acy0-0.5d0*dt**2*acy2)/dt
 
+  const = -dt**2/6d0*tau_z*velocity**2
+
+  do ikx = 1,nkx
+    kxt = kx(ikx) + acx0
+    kxt_eff = kxt + 0.5d0*dt*acx1 + dt**2/6d0*acx2
+    do iky = 1,nky
+      kyt = ky(iky) + acy0
+      kyt_eff = kyt + 0.5d0*dt*acy1 + dt**2/6d0*acy2
+      
+      ss = kxt*acy1-acx1*kyt
+      zHeff(1,1) =  const*ss
+      zHeff(2,1) =  velocity*(tau_z*kxt_eff + zI*kyt_eff)
+      zHeff(1,2) =  velocity*(tau_z*kxt_eff - zI*kyt_eff)
+      zHeff(2,2) = -const*ss
+
+
+    end do
+  end do
 
 
 end subroutine dt_evolve_Magnus

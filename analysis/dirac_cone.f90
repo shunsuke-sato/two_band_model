@@ -94,7 +94,25 @@ subroutine dt_evolve(it)
 
   call dt_evolve_Taylor(it)
 end subroutine dt_evolve
-  
+!----------------------------------------------------------------------------------------!
+subroutine dt_evolve_Magnus(it)
+  use global_variables
+  implicit none
+  integer,intent(in) :: it
+  real(8) :: acx0, acx1, acx2
+  real(8) :: acy0, acy1, acy2
+
+  acx0 = ac(1,it)
+  acx2 = (ac(1,it)-2d0*ac_dt2(1,it)+ac(1,it+1))/(0.5d0*dt)**2
+  acx1 = (ac(1,it+1)-acx0-0.5d0*dt**2*acx2)/dt
+
+  acy0 = ac(2,it)
+  acy2 = (ac(2,it)-2d0*ac_dt2(2,it)+ac(2,it+1))/(0.5d0*dt)**2
+  acy1 = (ac(2,it+1)-acy0-0.5d0*dt**2*acy2)/dt
+
+
+
+end subroutine dt_evolve_Magnus
 !----------------------------------------------------------------------------------------!
 subroutine dt_evolve_Taylor(it)
   use global_variables

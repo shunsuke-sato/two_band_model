@@ -104,8 +104,11 @@ subroutine dt_evolve_Magnus(it)
   integer :: ikx, iky
   real(8) :: kxt, kyt,kxt_eff, kyt_eff
   real(8) :: delta,lambda(2)
-  complex(8) :: zHeff(2,2),zalpha,zx,zvec(2,2)
+  complex(8) :: zHeff(2,2),zalpha,zx,zvec(2,2),zc(2)
   real(8) :: const,ss
+
+
+  if(delta_gap /= 0d0)stop 'delta_gap has to be zero in Magnus propagator.'
 
   acx0 = ac(1,it)
   acx2 = (ac(1,it)-2d0*ac_dt2(1,it)+ac(1,it+1))/(0.5d0*dt)**2
@@ -138,13 +141,13 @@ subroutine dt_evolve_Magnus(it)
 ! vector 1
         lambda(1) = sqrt(delta**2 + abs(zalpha)**2)
         zx = zalpha/(lambda(1) + delta)
-        ss = 1d0/sqrt(1d0 + abs(zs)**2)
+        ss = 1d0/sqrt(1d0 + abs(zx)**2)
         zvec(1,1) = ss
-        zvec(2,1) = ss*zs
+        zvec(2,1) = ss*zx
 
 ! vector 2
         lambda(2) = -lambda(1)
-        zvec(1,2) = -ss*conjg(zs)
+        zvec(1,2) = -ss*conjg(zx)
         zvec(2,2) =  ss
 
       else
@@ -152,17 +155,28 @@ subroutine dt_evolve_Magnus(it)
 ! vector 1
         lambda(1) = sqrt(delta**2 + abs(zalpha)**2)
         zx = conjg(zalpha)/(lambda(1) - delta)
-        ss = 1d0/sqrt(1d0 + abs(zs)**2)
-        zvec(1,1) = ss*zs
+        ss = 1d0/sqrt(1d0 + abs(zx)**2)
+        zvec(1,1) = ss*zx
         zvec(2,1) = ss
 
 ! vector 2
         lambda(2) = -lambda(1)
         zvec(1,2) =  ss
-        zvec(2,2) = -ss*conjg(zs)
+        zvec(2,2) = -ss*conjg(zx)
 
       end if
 
+! projection
+      zc(1) = conjg(zvec(1,1))*zpsi(1,ikx,iky) + conjg(zvec(2,1))*zpsi(2,ikx,iky)
+      zc(2) = conjg(zvec(1,2))*zpsi(1,ikx,iky) + conjg(zvec(2,2))*zpsi(2,ikx,iky)
+
+! propagation
+      zc(1) = zc(1)*exp(-zI*lambda(1)*dt)
+      zc(2) = zc(2)*exp(-zI*lambda(2)*dt)
+
+! update wavefunction
+      zpsi(:,ikx,iky) = zc(1)*zvec(:,1) + zc(2)*zvec(:,2)
+      
 
     end do
   end do

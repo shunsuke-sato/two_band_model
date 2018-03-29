@@ -13,9 +13,14 @@ module global_variables
   real(8),parameter :: velocity = clight*1.12d6/299792458d0
   integer,parameter :: nkx = 32, nky = 32
   real(8),parameter :: kx_max = 1d0, ky_max = 1d0
+! Fermi-Dirac distribution
+  real(8),parameter :: mu_F = 0d0/ev
+  real(8),parameter :: kbT  = 80d0/11604.505d0/ev
+
   real(8) :: kx(nkx),ky(nky)
   real(8) :: dkx,dky
-  complex(8) :: zpsi(2,nkx,nky)
+  complex(8) :: zpsi(2,2,nkx,nky)
+  real(8) :: occ(2,nkx,nky), eps(2,nkx,nky)
 
 ! time propagation
   real(8),parameter :: Tprop = 2.2d3/fs, dt = 0.08d0
@@ -40,7 +45,9 @@ subroutine init
   use global_variables
   implicit none
   integer :: ikx,iky
-  real(8) :: kxt, kyt
+  real(8) :: kxt, kyt, theta
+  complex(8) :: zs
+
 
   do ikx = 1,nkx
     kx(ikx) = -kx_max + 2d0*kx_max*dble(ikx-1)/dble(nkx-1)
@@ -52,19 +59,44 @@ subroutine init
   end do
   dky = 2d0*ky_max/dble(nky-1)
 
+  eps = 0d0
+
   if(delta_gap == 0d0)then ! Dirac cone
     do ikx = 1, nkx
       kxt = kx(ikx)
       do iky = 1,nky
         kyt = ky(iky)
-        zpsi(1,ikx,iky) = -(tau_z*kxt-zI*kyt)/sqrt(2d0*(kxt**2+kyt**2))
-        zpsi(2,ikx,iky) = 1d0/sqrt(2d0)
+
+        zs = tau_z*kxt+zI*kyt
+        if(zs /= 0d0)then
+          theta = -aint(log(-zs))
+        else
+          theta = 0d0
+        end if
+
+        zpsi(1,1,ikx,iky) = exp(zI*theta)/sqrt(2d0)
+        zpsi(2,1,ikx,iky) = 1d0/sqrt(2d0)
+        eps(1,ikx,iky) = -velocity*sqrt(tau_z**2*kxt**2 + kyt**2)
+        
+        zpsi(1,2,ikx,iky) = exp(zI*(theta+pi))/sqrt(2d0)
+        zpsi(2,2,ikx,iky) = 1d0/sqrt(2d0)
+        eps(2,ikx,iky) = velocity*sqrt(tau_z**2*kxt**2 + kyt**2)
+        
       end do
     end do
   else
     stop 'Kane band is not implemented yet.'
   end if
+  
+! Fermi-Dirac distribution
+  do ikx = 1,nkx
+    do iky = 1,nky
 
+      occ(1,ikx,iky) = 2d0/(exp((eps(1,ikx,iky)-mu_F)/kbT)+1d0)
+      occ(2,ikx,iky) = 2d0/(exp((eps(2,ikx,iky)-mu_F)/kbT)+1d0)
+
+    end do
+  end do
 
 end subroutine init
 !----------------------------------------------------------------------------------------!

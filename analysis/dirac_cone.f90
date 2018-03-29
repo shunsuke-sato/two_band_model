@@ -434,7 +434,7 @@ subroutine current(jxy,it)
   jx = 0d0
   jy = 0d0
 
-!$omp parallel default(shared), private(ikx,iky,kxt,kyt,jxt,jyt,zs,xx,jx0,jy0) 
+!$omp parallel default(shared), private(ikx,iky,kxt,kyt,jxt,jyt,zs,jx0,jy0) 
 !$omp do reduction(+:jx,jy) collapse(2)
   do ikx = 1,nkx
     do iky = 1,nky
@@ -442,16 +442,17 @@ subroutine current(jxy,it)
        kxt = kx(ikx) + ac(1,it)
        kyt = ky(iky) + ac(2,it)
        
-       jxt = real(zpsi(1,ikx,iky)*conjg(zpsi(2,ikx,iky)))
-       jyt = real(zI*zpsi(1,ikx,iky)*conjg(zpsi(2,ikx,iky)))
+       jxt = 2d0*occ(1,ikx,iky)*real(zpsi(1,1,ikx,iky)*conjg(zpsi(2,1,ikx,iky))) &
+            +2d0*occ(2,ikx,iky)*real(zpsi(1,2,ikx,iky)*conjg(zpsi(2,2,ikx,iky)))
+       jyt = 2d0*occ(1,ikx,iky)*real(zI*zpsi(1,1,ikx,iky)*conjg(zpsi(2,1,ikx,iky))) &
+            +2d0*occ(2,ikx,iky)*real(zI*zpsi(1,2,ikx,iky)*conjg(zpsi(2,2,ikx,iky)))
        
-       zs = -velocity*(tau_z*kxt-zI*kyt)&
-            /(delta_gap*0.5d0&
-            +sqrt(delta_gap**2*0.25d0+velocity**2*(kxt**2+kyt**2)))
+       zs =  -(tau_z*kxt-zI*kyt)&
+            /sqrt(kxt**2+kyt**2)
        
-       xx = abs(zs)**2
-       jx0 =  2d0/(1d0+xx)*real(zs)
-       jy0 = -2d0/(1d0+xx)*aimag(zs)
+
+       jx0 =  2d0*0.5d0*real(zs)   *(occ(1,ikx,iky)-occ(2,ikx,iky))
+       jy0 =  2d0*0.5d0*real(zI*zs)*(occ(1,ikx,iky)-occ(2,ikx,iky))
        
        jx = jx + jxt - jx0
        jy = jy + jyt - jy0

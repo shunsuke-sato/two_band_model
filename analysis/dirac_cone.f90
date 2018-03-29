@@ -130,178 +130,178 @@ subroutine dt_evolve(it)
 
 
 end subroutine dt_evolve
-!----------------------------------------------------------------------------------------!
-subroutine dt_evolve_Magnus(it)
-  use global_variables
-  implicit none
-  integer,intent(in) :: it
-  real(8) :: acx0, acx1, acx2
-  real(8) :: acy0, acy1, acy2
-  integer :: ikx, iky
-  real(8) :: kxt, kyt,kxt_eff, kyt_eff
-  real(8) :: delta,lambda(2)
-  complex(8) :: zHeff(2,2),zalpha,zx,zvec(2,2),zc(2)
-  real(8) :: const,ss
-
-
-  if(delta_gap /= 0d0)stop 'delta_gap has to be zero in Magnus propagator.'
-
-  acx0 = ac(1,it)
-  acx2 = (ac(1,it)-2d0*ac_dt2(1,it)+ac(1,it+1))/(0.5d0*dt)**2
-  acx1 = (ac(1,it+1)-acx0-0.5d0*dt**2*acx2)/dt
-
-  acy0 = ac(2,it)
-  acy2 = (ac(2,it)-2d0*ac_dt2(2,it)+ac(2,it+1))/(0.5d0*dt)**2
-  acy1 = (ac(2,it+1)-acy0-0.5d0*dt**2*acy2)/dt
-
-  const = -dt**2/6d0*tau_z*velocity**2
-
-
-!$omp parallel default(shared), private(ikx,iky,kxt,kyt,kxt_eff,kyt_eff,ss,delta,zalpha, &
-!$omp & lambda,zx,zvec,zc) 
-!$omp do collapse(2)
-  do ikx = 1,nkx
-    do iky = 1,nky
-      kxt = kx(ikx) + acx0
-      kxt_eff = kxt + 0.5d0*dt*acx1 + dt**2/6d0*acx2
-      kyt = ky(iky) + acy0
-      kyt_eff = kyt + 0.5d0*dt*acy1 + dt**2/6d0*acy2
-      
-      ss = kxt*acy1-acx1*kyt
-!      zHeff(1,1) =  const*ss
-!      zHeff(2,1) =  velocity*(tau_z*kxt_eff + zI*kyt_eff)
-!      zHeff(1,2) =  velocity*(tau_z*kxt_eff - zI*kyt_eff)
-!      zHeff(2,2) = -const*ss
-
-      delta  = const*ss
-      zalpha = velocity*(tau_z*kxt_eff + zI*kyt_eff)
+!!----------------------------------------------------------------------------------------!
+!subroutine dt_evolve_Magnus(it)
+!  use global_variables
+!  implicit none
+!  integer,intent(in) :: it
+!  real(8) :: acx0, acx1, acx2
+!  real(8) :: acy0, acy1, acy2
+!  integer :: ikx, iky
+!  real(8) :: kxt, kyt,kxt_eff, kyt_eff
+!  real(8) :: delta,lambda(2)
+!  complex(8) :: zHeff(2,2),zalpha,zx,zvec(2,2),zc(2)
+!  real(8) :: const,ss
 !
-      if(delta >= 0d0)then
-        
-! vector 1
-        lambda(1) = sqrt(delta**2 + abs(zalpha)**2)
-        zx = zalpha/(lambda(1) + delta)
-        ss = 1d0/sqrt(1d0 + abs(zx)**2)
-        zvec(1,1) = ss
-        zvec(2,1) = ss*zx
-
-! vector 2
-        lambda(2) = -lambda(1)
-        zvec(1,2) = -ss*conjg(zx)
-        zvec(2,2) =  ss
-
-      else
-
-! vector 1
-        lambda(1) = sqrt(delta**2 + abs(zalpha)**2)
-        zx = conjg(zalpha)/(lambda(1) - delta)
-        ss = 1d0/sqrt(1d0 + abs(zx)**2)
-        zvec(1,1) = ss*zx
-        zvec(2,1) = ss
-
-! vector 2
-        lambda(2) = -lambda(1)
-        zvec(1,2) =  ss
-        zvec(2,2) = -ss*conjg(zx)
-
-      end if
-
-! projection
-      zc(1) = conjg(zvec(1,1))*zpsi(1,ikx,iky) + conjg(zvec(2,1))*zpsi(2,ikx,iky)
-      zc(2) = conjg(zvec(1,2))*zpsi(1,ikx,iky) + conjg(zvec(2,2))*zpsi(2,ikx,iky)
-
-! propagation
-      zc(1) = zc(1)*exp(-zI*lambda(1)*dt)
-      zc(2) = zc(2)*exp(-zI*lambda(2)*dt)
-
-! update wavefunction
-      zpsi(:,ikx,iky) = zc(1)*zvec(:,1) + zc(2)*zvec(:,2)
-      
-
-    end do
-  end do
-!$omp end do
-!$omp end parallel  
-
-end subroutine dt_evolve_Magnus
-!----------------------------------------------------------------------------------------!
-subroutine dt_evolve_Magnus_1st(it)
-  use global_variables
-  implicit none
-  integer,intent(in) :: it
-  real(8) :: acx0, acx1, acx2
-  real(8) :: acy0, acy1, acy2
-  integer :: ikx, iky
-  real(8) :: kxt, kyt,kxt_eff, kyt_eff
-  real(8) :: delta,lambda(2)
-  complex(8) :: zHeff(2,2),zalpha,zx,zvec(2,2),zc(2)
-  real(8) :: const,ss
-
-
-  if(delta_gap /= 0d0)stop 'delta_gap has to be zero in Magnus propagator.'
-
-  acx0 = ac(1,it)
-  acx2 = (ac(1,it)-2d0*ac_dt2(1,it)+ac(1,it+1))/(0.5d0*dt)**2
-  acx1 = (ac(1,it+1)-acx0-0.5d0*dt**2*acx2)/dt
-
-  acy0 = ac(2,it)
-  acy2 = (ac(2,it)-2d0*ac_dt2(2,it)+ac(2,it+1))/(0.5d0*dt)**2
-  acy1 = (ac(2,it+1)-acy0-0.5d0*dt**2*acy2)/dt
-
-  delta = 0d0
-
-
-!$omp parallel default(shared), private(ikx,iky,kxt,kyt,kxt_eff,kyt_eff,ss,zalpha, &
-!$omp & lambda,zx,zvec,zc) 
-!$omp do collapse(2)
-  do ikx = 1,nkx
-    do iky = 1,nky
-      kxt = kx(ikx) + acx0
-      kxt_eff = kxt + 0.5d0*dt*acx1 + dt**2/6d0*acx2
-      kyt = ky(iky) + acy0
-      kyt_eff = kyt + 0.5d0*dt*acy1 + dt**2/6d0*acy2
-      
-      zalpha = velocity*(tau_z*kxt_eff + zI*kyt_eff)
 !
-! vector 1
-      lambda(1) = sqrt(delta**2 + abs(zalpha)**2)
-      zx = zalpha/(lambda(1) + delta)
-      ss = 1d0/sqrt(1d0 + abs(zx)**2)
-      zvec(1,1) = ss
-      zvec(2,1) = ss*zx
-
-! vector 2
-      lambda(2) = -lambda(1)
-      zvec(1,2) = -ss*conjg(zx)
-      zvec(2,2) =  ss
-
-
-! projection
-      zc(1) = conjg(zvec(1,1))*zpsi(1,ikx,iky) + conjg(zvec(2,1))*zpsi(2,ikx,iky)
-      zc(2) = conjg(zvec(1,2))*zpsi(1,ikx,iky) + conjg(zvec(2,2))*zpsi(2,ikx,iky)
-
-! propagation
-      zc(1) = zc(1)*exp(-zI*lambda(1)*dt)
-      zc(2) = zc(2)*exp(-zI*lambda(2)*dt)
-
-! update wavefunction
-      zpsi(:,ikx,iky) = zc(1)*zvec(:,1) + zc(2)*zvec(:,2)
-      
-
-    end do
-  end do
-!$omp end do
-!$omp end parallel  
-
-end subroutine dt_evolve_Magnus_1st
-!----------------------------------------------------------------------------------------!
+!  if(delta_gap /= 0d0)stop 'delta_gap has to be zero in Magnus propagator.'
+!
+!  acx0 = ac(1,it)
+!  acx2 = (ac(1,it)-2d0*ac_dt2(1,it)+ac(1,it+1))/(0.5d0*dt)**2
+!  acx1 = (ac(1,it+1)-acx0-0.5d0*dt**2*acx2)/dt
+!
+!  acy0 = ac(2,it)
+!  acy2 = (ac(2,it)-2d0*ac_dt2(2,it)+ac(2,it+1))/(0.5d0*dt)**2
+!  acy1 = (ac(2,it+1)-acy0-0.5d0*dt**2*acy2)/dt
+!
+!  const = -dt**2/6d0*tau_z*velocity**2
+!
+!
+!!$omp parallel default(shared), private(ikx,iky,kxt,kyt,kxt_eff,kyt_eff,ss,delta,zalpha, &
+!!$omp & lambda,zx,zvec,zc) 
+!!$omp do collapse(2)
+!  do ikx = 1,nkx
+!    do iky = 1,nky
+!      kxt = kx(ikx) + acx0
+!      kxt_eff = kxt + 0.5d0*dt*acx1 + dt**2/6d0*acx2
+!      kyt = ky(iky) + acy0
+!      kyt_eff = kyt + 0.5d0*dt*acy1 + dt**2/6d0*acy2
+!      
+!      ss = kxt*acy1-acx1*kyt
+!!      zHeff(1,1) =  const*ss
+!!      zHeff(2,1) =  velocity*(tau_z*kxt_eff + zI*kyt_eff)
+!!      zHeff(1,2) =  velocity*(tau_z*kxt_eff - zI*kyt_eff)
+!!      zHeff(2,2) = -const*ss
+!
+!      delta  = const*ss
+!      zalpha = velocity*(tau_z*kxt_eff + zI*kyt_eff)
+!!
+!      if(delta >= 0d0)then
+!        
+!! vector 1
+!        lambda(1) = sqrt(delta**2 + abs(zalpha)**2)
+!        zx = zalpha/(lambda(1) + delta)
+!        ss = 1d0/sqrt(1d0 + abs(zx)**2)
+!        zvec(1,1) = ss
+!        zvec(2,1) = ss*zx
+!
+!! vector 2
+!        lambda(2) = -lambda(1)
+!        zvec(1,2) = -ss*conjg(zx)
+!        zvec(2,2) =  ss
+!
+!      else
+!
+!! vector 1
+!        lambda(1) = sqrt(delta**2 + abs(zalpha)**2)
+!        zx = conjg(zalpha)/(lambda(1) - delta)
+!        ss = 1d0/sqrt(1d0 + abs(zx)**2)
+!        zvec(1,1) = ss*zx
+!        zvec(2,1) = ss
+!
+!! vector 2
+!        lambda(2) = -lambda(1)
+!        zvec(1,2) =  ss
+!        zvec(2,2) = -ss*conjg(zx)
+!
+!      end if
+!
+!! projection
+!      zc(1) = conjg(zvec(1,1))*zpsi(1,ikx,iky) + conjg(zvec(2,1))*zpsi(2,ikx,iky)
+!      zc(2) = conjg(zvec(1,2))*zpsi(1,ikx,iky) + conjg(zvec(2,2))*zpsi(2,ikx,iky)
+!
+!! propagation
+!      zc(1) = zc(1)*exp(-zI*lambda(1)*dt)
+!      zc(2) = zc(2)*exp(-zI*lambda(2)*dt)
+!
+!! update wavefunction
+!      zpsi(:,ikx,iky) = zc(1)*zvec(:,1) + zc(2)*zvec(:,2)
+!      
+!
+!    end do
+!  end do
+!!$omp end do
+!!$omp end parallel  
+!
+!end subroutine dt_evolve_Magnus
+!!----------------------------------------------------------------------------------------!
+!subroutine dt_evolve_Magnus_1st(it)
+!  use global_variables
+!  implicit none
+!  integer,intent(in) :: it
+!  real(8) :: acx0, acx1, acx2
+!  real(8) :: acy0, acy1, acy2
+!  integer :: ikx, iky
+!  real(8) :: kxt, kyt,kxt_eff, kyt_eff
+!  real(8) :: delta,lambda(2)
+!  complex(8) :: zHeff(2,2),zalpha,zx,zvec(2,2),zc(2)
+!  real(8) :: const,ss
+!
+!
+!  if(delta_gap /= 0d0)stop 'delta_gap has to be zero in Magnus propagator.'
+!
+!  acx0 = ac(1,it)
+!  acx2 = (ac(1,it)-2d0*ac_dt2(1,it)+ac(1,it+1))/(0.5d0*dt)**2
+!  acx1 = (ac(1,it+1)-acx0-0.5d0*dt**2*acx2)/dt
+!
+!  acy0 = ac(2,it)
+!  acy2 = (ac(2,it)-2d0*ac_dt2(2,it)+ac(2,it+1))/(0.5d0*dt)**2
+!  acy1 = (ac(2,it+1)-acy0-0.5d0*dt**2*acy2)/dt
+!
+!  delta = 0d0
+!
+!
+!!$omp parallel default(shared), private(ikx,iky,kxt,kyt,kxt_eff,kyt_eff,ss,zalpha, &
+!!$omp & lambda,zx,zvec,zc) 
+!!$omp do collapse(2)
+!  do ikx = 1,nkx
+!    do iky = 1,nky
+!      kxt = kx(ikx) + acx0
+!      kxt_eff = kxt + 0.5d0*dt*acx1 + dt**2/6d0*acx2
+!      kyt = ky(iky) + acy0
+!      kyt_eff = kyt + 0.5d0*dt*acy1 + dt**2/6d0*acy2
+!      
+!      zalpha = velocity*(tau_z*kxt_eff + zI*kyt_eff)
+!!
+!! vector 1
+!      lambda(1) = sqrt(delta**2 + abs(zalpha)**2)
+!      zx = zalpha/(lambda(1) + delta)
+!      ss = 1d0/sqrt(1d0 + abs(zx)**2)
+!      zvec(1,1) = ss
+!      zvec(2,1) = ss*zx
+!
+!! vector 2
+!      lambda(2) = -lambda(1)
+!      zvec(1,2) = -ss*conjg(zx)
+!      zvec(2,2) =  ss
+!
+!
+!! projection
+!      zc(1) = conjg(zvec(1,1))*zpsi(1,ikx,iky) + conjg(zvec(2,1))*zpsi(2,ikx,iky)
+!      zc(2) = conjg(zvec(1,2))*zpsi(1,ikx,iky) + conjg(zvec(2,2))*zpsi(2,ikx,iky)
+!
+!! propagation
+!      zc(1) = zc(1)*exp(-zI*lambda(1)*dt)
+!      zc(2) = zc(2)*exp(-zI*lambda(2)*dt)
+!
+!! update wavefunction
+!      zpsi(:,ikx,iky) = zc(1)*zvec(:,1) + zc(2)*zvec(:,2)
+!      
+!
+!    end do
+!  end do
+!!$omp end do
+!!$omp end parallel  
+!
+!end subroutine dt_evolve_Magnus_1st
+!!----------------------------------------------------------------------------------------!
 subroutine dt_evolve_Taylor(it)
   use global_variables
   implicit none
   integer,intent(in) :: it
   integer :: ikx, iky
   real(8) :: kxt, kyt
-  complex(8) :: zpsi_t(2,0:4)
+  complex(8) :: zpsi_t(2,2,0:4)
 
 !$omp parallel default(shared), private(ikx,iky,kxt,kyt,zpsi_t) 
 !$omp do collapse(2)
@@ -311,43 +311,43 @@ subroutine dt_evolve_Taylor(it)
       kxt = kx(ikx) + ac(1,it)
       kyt = ky(iky) + ac(2,it)
 ! RK1
-      zpsi_t(:,0) = zpsi(:,ikx,iky)
-      zpsi_t(1,1) = 0.5d0*delta_gap*zpsi_t(1,0) &
-        + velocity*(tau_z*kxt - zI*kyt)*zpsi_t(2,0) 
-      zpsi_t(2,1) = velocity*(tau_z*kxt + zI*kyt)*zpsi_t(1,0)  &
-        - 0.5d0*delta_gap*zpsi_t(2,0)
+      zpsi_t(:,:,0) = zpsi(:,:,ikx,iky)
+      zpsi_t(1,:,1) = 0.5d0*delta_gap*zpsi_t(1,:,0) &
+        + velocity*(tau_z*kxt - zI*kyt)*zpsi_t(2,:,0) 
+      zpsi_t(2,:,1) = velocity*(tau_z*kxt + zI*kyt)*zpsi_t(1,:,0)  &
+        - 0.5d0*delta_gap*zpsi_t(2,:,0)
 
       kxt = kx(ikx) + ac_dt2(1,it)
       kyt = ky(iky) + ac_dt2(2,it)
 ! RK2
-      zpsi_t(:,0) = zpsi(:,ikx,iky) - zI*0.5d0*dt*zpsi_t(:,1)
+      zpsi_t(:,:,0) = zpsi(:,:,ikx,iky) - zI*0.5d0*dt*zpsi_t(:,:,1)
 
-      zpsi_t(1,2) = 0.5d0*delta_gap*zpsi_t(1,0) &
-        + velocity*(tau_z*kxt - zI*kyt)*zpsi_t(2,0) 
-      zpsi_t(2,2) = velocity*(tau_z*kxt + zI*kyt)*zpsi_t(1,0)  &
-        - 0.5d0*delta_gap*zpsi_t(2,0)
+      zpsi_t(1,:,2) = 0.5d0*delta_gap*zpsi_t(1,:,0) &
+        + velocity*(tau_z*kxt - zI*kyt)*zpsi_t(2,:,0) 
+      zpsi_t(2,:,2) = velocity*(tau_z*kxt + zI*kyt)*zpsi_t(1,:,0)  &
+        - 0.5d0*delta_gap*zpsi_t(2,:,0)
 
 ! RK3
-      zpsi_t(:,0) = zpsi(:,ikx,iky) - zI*0.5d0*dt*zpsi_t(:,2)
+      zpsi_t(:,:,0) = zpsi(:,:,ikx,iky) - zI*0.5d0*dt*zpsi_t(:,:,2)
 
-      zpsi_t(1,3) = 0.5d0*delta_gap*zpsi_t(1,0) &
-        + velocity*(tau_z*kxt - zI*kyt)*zpsi_t(2,0) 
-      zpsi_t(2,3) = velocity*(tau_z*kxt + zI*kyt)*zpsi_t(1,0)  &
-        - 0.5d0*delta_gap*zpsi_t(2,0)
+      zpsi_t(1,:,3) = 0.5d0*delta_gap*zpsi_t(1,:,0) &
+        + velocity*(tau_z*kxt - zI*kyt)*zpsi_t(2,:,0) 
+      zpsi_t(2,:,3) = velocity*(tau_z*kxt + zI*kyt)*zpsi_t(1,:,0)  &
+        - 0.5d0*delta_gap*zpsi_t(2,:,0)
 
       kxt = kx(ikx) + ac(1,it+1)
       kyt = ky(iky) + ac(2,it+1)
 
 ! RK4
-      zpsi_t(:,0) = zpsi(:,ikx,iky) - zI*dt*zpsi_t(:,3)
+      zpsi_t(:,:,0) = zpsi(:,ikx,iky) - zI*dt*zpsi_t(:,:,3)
 
-      zpsi_t(1,4) = 0.5d0*delta_gap*zpsi_t(1,0) &
-        + velocity*(tau_z*kxt - zI*kyt)*zpsi_t(2,0) 
-      zpsi_t(2,4) = velocity*(tau_z*kxt + zI*kyt)*zpsi_t(1,0)  &
-        - 0.5d0*delta_gap*zpsi_t(2,0)
+      zpsi_t(1,:,4) = 0.5d0*delta_gap*zpsi_t(1,:,0) &
+        + velocity*(tau_z*kxt - zI*kyt)*zpsi_t(2,:,0) 
+      zpsi_t(2,:,4) = velocity*(tau_z*kxt + zI*kyt)*zpsi_t(1,:,0)  &
+        - 0.5d0*delta_gap*zpsi_t(2,:,0)
 
-      zpsi(:,ikx,iky) = zpsi(:,ikx,iky) -zI*dt/6d0*( &
-        zpsi_t(:,1) + 2d0*zpsi_t(:,2) + 2d0*zpsi_t(:,3) + zpsi_t(:,4) )
+      zpsi(:,:,ikx,iky) = zpsi(:,:,ikx,iky) -zI*dt/6d0*( &
+        zpsi_t(:,:,1) + 2d0*zpsi_t(:,:,2) + 2d0*zpsi_t(:,:,3) + zpsi_t(:,:,4) )
       
     end do
   end do

@@ -339,7 +339,7 @@ subroutine dt_evolve_Taylor(it)
       kyt = ky(iky) + ac(2,it+1)
 
 ! RK4
-      zpsi_t(:,:,0) = zpsi(:,ikx,iky) - zI*dt*zpsi_t(:,:,3)
+      zpsi_t(:,:,0) = zpsi(:,:,ikx,iky) - zI*dt*zpsi_t(:,:,3)
 
       zpsi_t(1,:,4) = 0.5d0*delta_gap*zpsi_t(1,:,0) &
         + velocity*(tau_z*kxt - zI*kyt)*zpsi_t(2,:,0) 

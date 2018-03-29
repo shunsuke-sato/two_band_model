@@ -92,9 +92,9 @@ subroutine dt_evolve(it)
   implicit none
   integer,intent(inout) :: it
 
-!  call dt_evolve_Taylor(it)
+  call dt_evolve_Taylor(it)
 !  call dt_evolve_Magnus(it)
-  call dt_evolve_Magnus_1st(it)
+!  call dt_evolve_Magnus_1st(it)
 
 
 end subroutine dt_evolve

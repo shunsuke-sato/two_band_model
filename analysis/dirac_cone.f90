@@ -467,5 +467,65 @@ subroutine current(jxy,it)
 
 end subroutine current
 !----------------------------------------------------------------------------------------!
+subroutine intra_current(jxy,it)
+  use global_variables
+  implicit none
+  real(8),intent(out) :: jxy(2)
+  integer,intent(in) :: it
+  real(8) :: jx,jy
+  real(8) :: jxt,jyt,jx0,jy0
+  integer :: ikx, iky
+  real(8) :: kxt, kyt
+  complex(8) :: zeig_t(2,2), zs
+  real(8) :: theta, ovl_t(2,2)
+
+  jx = 0d0
+  jy = 0d0
+
+  do ikx = 1,nkx
+    do iky = 1,nky
+
+       kxt = kx(ikx) + ac(1,it)
+       kyt = ky(iky) + ac(2,it)
+
+       zs = tau_z*kxt+zI*kyt
+       if(zs /= 0d0)then
+         theta = -aimag(log(-zs))
+       else
+         theta = 0d0
+       end if
+
+       zeig_t(1,1) = exp(zI*theta)/sqrt(2d0)
+       zeig_t(2,1) = 1d0/sqrt(2d0)
+
+       zeig_t(1,2) = exp(zI*(theta+pi))/sqrt(2d0)
+       zeig_t(2,2) = 1d0/sqrt(2d0)
+
+       ovl_t(1,1) = abs(sum(conjg(zeig_t(:,1))*zpsi(:,1,ikx,iky)))**2
+       ovl_t(2,1) = abs(sum(conjg(zeig_t(:,2))*zpsi(:,1,ikx,iky)))**2
+       ovl_t(1,2) = abs(sum(conjg(zeig_t(:,1))*zpsi(:,2,ikx,iky)))**2
+       ovl_t(2,2) = abs(sum(conjg(zeig_t(:,2))*zpsi(:,2,ikx,iky)))**2
+
+       zs =  -(tau_z*kxt-zI*kyt)&
+         /sqrt(kxt**2+kyt**2)
+       
+       jx0 =  2d0*0.5d0*real(zs)   *(occ(1,ikx,iky)-occ(2,ikx,iky))
+       jy0 =  2d0*0.5d0*real(zI*zs)*(occ(1,ikx,iky)-occ(2,ikx,iky))
+       jxt =  2d0*0.5d0*real(zs)*( &
+          (occ(1,ikx,iky)*ovl_t(1,1)+occ(2,ikx,iky)*ovl_t(1,2)) &
+         -(occ(1,ikx,iky)*ovl_t(2,1)+occ(2,ikx,iky)*ovl_t(2,2)))
+       jyt =  2d0*0.5d0*real(zI*zs)*( &
+          (occ(1,ikx,iky)*ovl_t(1,1)+occ(2,ikx,iky)*ovl_t(1,2)) &
+         -(occ(1,ikx,iky)*ovl_t(2,1)+occ(2,ikx,iky)*ovl_t(2,2)))
+
+       jx = jx + jxt - jx0
+       jy = jy + jyt - jy0
+
+
+     end do
+   end do
+
+
+end subroutine intra_current
 !----------------------------------------------------------------------------------------!
 !----------------------------------------------------------------------------------------!

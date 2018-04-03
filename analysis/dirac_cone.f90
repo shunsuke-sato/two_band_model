@@ -482,6 +482,8 @@ subroutine intra_current(jxy,it)
   jx = 0d0
   jy = 0d0
 
+!$omp parallel default(shared), private(ikx,iky,kxt,kyt,jxt,jyt,zs,jx0,jy0,zeig_t,ovl_t,theta) 
+!$omp do reduction(+:jx,jy) collapse(2)
   do ikx = 1,nkx
     do iky = 1,nky
 
@@ -524,7 +526,12 @@ subroutine intra_current(jxy,it)
 
      end do
    end do
+!$omp end do
+!$omp end parallel  
 
+
+  jxy(1) = jx*dkx*dky
+  jxy(2) = jy*dkx*dky
 
 end subroutine intra_current
 !----------------------------------------------------------------------------------------!

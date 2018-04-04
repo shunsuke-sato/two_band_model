@@ -13,6 +13,7 @@ module global_variables
   real(8),parameter :: velocity = clight*1.12d6/299792458d0
   integer,parameter :: nkx = 32, nky = 32
   real(8),parameter :: kx_max = 1d0, ky_max = 1d0
+  real(8),parameter :: kx_shift = 0d0, ky_shift = 0d0
 ! Fermi-Dirac distribution
   real(8),parameter :: mu_F = 0d0/ev
   real(8),parameter :: kbT  = 80d0/11604.505d0/ev
@@ -53,11 +54,13 @@ subroutine init
     kx(ikx) = -kx_max + 2d0*kx_max*dble(ikx-1)/dble(nkx-1)
   end do
   dkx = 2d0*kx_max/dble(nkx-1)
+  kx = kx + kx_shift
 
   do iky = 1,nky
     ky(iky) = -ky_max + 2d0*ky_max*dble(iky-1)/dble(nky-1)
   end do
   dky = 2d0*ky_max/dble(nky-1)
+  ky = ky + ky_shift
 
   eps = 0d0
 

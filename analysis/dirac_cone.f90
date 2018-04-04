@@ -114,6 +114,12 @@ subroutine time_propagation
     call dt_evolve(it)
     call current(jxy(:),it)
     write(21,"(999e26.16e3)")dt*(it+1),ac(:,it+1),jxy
+
+    if(it*dt > (1d3+1d0)/fs)then
+      call e_h_distribution(it)
+      exit
+    end if
+
   end do
   close(21)
 
@@ -535,4 +541,65 @@ subroutine intra_current(jxy,it)
 
 end subroutine intra_current
 !----------------------------------------------------------------------------------------!
+subroutine e_h_distribution(it)
+  use global_variables
+  implicit none
+  integer,intent(in) :: it
+  real(8) :: occ_t(2,nkx,nky)
+  character(256) :: cit, cfilename
+  integer :: ikx, iky
+  real(8) :: kxt, kyt
+  complex(8) :: zeig_t(2,2), zs
+  real(8) :: theta
+  
+  do ikx = 1,nkx
+    do iky = 1,nky
+
+      kxt = kx(ikx) + ac(1,it)
+      kyt = ky(iky) + ac(2,it)
+
+      zs = tau_z*kxt+zI*kyt
+      if(zs /= 0d0)then
+        theta = -aimag(log(-zs))
+      else
+        theta = 0d0
+      end if
+
+      zeig_t(1,1) = exp(zI*theta)/sqrt(2d0)
+      zeig_t(2,1) = 1d0/sqrt(2d0)
+
+      zeig_t(1,2) = exp(zI*(theta+pi))/sqrt(2d0)
+      zeig_t(2,2) = 1d0/sqrt(2d0)
+
+      occ_t(1,ikx,iky) = occ(1,ikx,iky)*abs(sum(conjg(zeig_t(:,1))*zpsi(:,1,ikx,iky)))**2 &
+                        +occ(2,ikx,iky)*abs(sum(conjg(zeig_t(:,1))*zpsi(:,2,ikx,iky)))**2 
+
+      occ_t(2,ikx,iky) = occ(1,ikx,iky)*abs(sum(conjg(zeig_t(:,2))*zpsi(:,1,ikx,iky)))**2 &
+                        +occ(2,ikx,iky)*abs(sum(conjg(zeig_t(:,2))*zpsi(:,2,ikx,iky)))**2 
+
+
+    end do
+  end do
+
+  write(cit,"(I9.9)")it
+  cfilename = trim(cit)//"_eh_dist.out"
+  open(900,file=cfilename)
+  write(900,"(A,2x,I7,I7)")"# nkx,nky=",nkx,nky
+  write(900,"(A)")"# kx, ky, (-)hole dist., (+)electron dist."
+  do ikx = 1,nkx
+    do iky = 1,nky
+
+      kxt = kx(ikx) + ac(1,it)
+      kyt = ky(iky) + ac(2,it)
+
+      write(900,"(999e26.16e3)")kxt,kyt,occ_t(1,ikx,iky)-2d0,occ_t(2,ikx,iky)
+    end do
+    write(900,*)
+  end do
+  
+
+  close(900)
+  
+
+end subroutine e_h_distribution
 !----------------------------------------------------------------------------------------!

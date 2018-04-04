@@ -585,6 +585,7 @@ subroutine e_h_distribution(it)
   cfilename = trim(cit)//"_eh_dist.out"
   open(900,file=cfilename)
   write(900,"(A,2x,I7,I7)")"# nkx,nky=",nkx,nky
+  write(900,"(A,2x,2e26.16e3)")"# acx,acy=",ac(:,it)
   write(900,"(A)")"# kx, ky, (-)hole dist., (+)electron dist."
   do ikx = 1,nkx
     do iky = 1,nky

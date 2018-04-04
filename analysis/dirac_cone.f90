@@ -118,7 +118,7 @@ subroutine time_propagation
     call current(jxy(:),it)
     write(21,"(999e26.16e3)")dt*(it+1),ac(:,it+1),jxy
 
-    if(it*dt > (1d3+1d0)/fs)then
+    if(it*dt > (1d3+10d0+1d0)/fs)then
       call e_h_distribution(it)
       exit
     end if

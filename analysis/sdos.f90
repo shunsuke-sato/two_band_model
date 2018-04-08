@@ -58,6 +58,8 @@ subroutine calc_delta_Dj_parabolic
 
   delta_Dj_w = 0d0
 
+!$omp parallel default(shared), private(iw,ikz,ikr,it,ww,kz,kr,eps0,c1,c2,tt,ztheta,ztheta0,ss) 
+!$omp do
   do iw = 0,nw
     write(*,*)'iw=',iw
     ww = wi + dw*iw
@@ -88,7 +90,8 @@ subroutine calc_delta_Dj_parabolic
       end do
     end do
   end do
-
+!$omp end do
+!$omp end parallel  
 
   open(20,file='delta_jdos_parabolic_band.out')
   do iw =0,nw

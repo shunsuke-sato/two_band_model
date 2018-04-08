@@ -22,8 +22,8 @@ module global_variables
 
 
 ! Discretization
-  integer,parameter :: NKr = 64, NKz = 64
-  real(8),parameter :: kz_max = 0.1d0, kr_max = 0.1d0
+  integer,parameter :: NKr = 256, NKz = 256
+  real(8),parameter :: kz_max = 0.2d0, kr_max = 0.2d0
   real(8),parameter :: dkz = kz_max/Nkz, dkr = kr_max/Nkr
 
 
@@ -32,7 +32,7 @@ module global_variables
   real(8),parameter :: Tprop = 10d0/gamma
   real(8),parameter :: dt = 10d0
   integer,parameter :: nt = aint(Tprop/dt)+1
-  integer,parameter :: Nw = 200
+  integer,parameter :: Nw = 32*3-1
   real(8),parameter :: wi = 2.0d0/ev, wf = 4d0/ev, dw = (wf-wi)/Nw
   real(8) :: delta_Dj_w(0:Nw)
 
@@ -62,7 +62,7 @@ subroutine calc_delta_Dj_parabolic
 !$omp parallel default(shared), private(iw,ikz,ikr,it,ww,kz,kr,eps0,c1,c2,tt,ztheta,ztheta0,ss) 
 !$omp do
   do iw = 0,nw
-    write(*,*)'iw=',iw
+!    write(*,*)'iw=',iw
     ww = wi + dw*iw
 
     do ikz = -nkz,nkz
@@ -117,7 +117,7 @@ subroutine calc_delta_Dj_kane
 !$omp parallel default(shared), private(iw,ikz,ikr,it,ww,kz,kr,eps0,a,b,c,d,F0,Ft,tt,ztheta,ztheta0,ss) 
 !$omp do
   do iw = 0,nw
-    write(*,*)'iw=',iw
+!    write(*,*)'iw=',iw
     ww = wi + dw*iw
 
     do ikz = -nkz,nkz
@@ -131,7 +131,7 @@ subroutine calc_delta_Dj_kane
         b = -2d0*kz*E0/(mass_r*eps_g)
         c = 1d0 + (kz**2+kr**2)/(mass_r*eps_g)
         d = (b**2 - 4d0*a*c)/(8d0*a)
-        F0 = b*sqrt(c)/(4d0*a)-d*log(abs(b+sqrt(a*c)))/sqrt(a)
+        F0 = b*sqrt(c)/(4d0*a)-d*log(abs(b+2d0*sqrt(a*c)))/sqrt(a)
 
         ss = 0d0
         do it = 0,nt
@@ -139,7 +139,7 @@ subroutine calc_delta_Dj_kane
           ztheta0 = -zI*(eps0 - ww)*tt -gamma*tt
 
           Ft = (2d0*a*tt+b)/(4d0*a)*sqrt(a*tt**2+b*tt+c)-d*log(abs(2*a*tt+b+2*sqrt(a*(a*tt**2+b*tt+c))))/sqrt(a)
-          ztheta  = ztheta0 -zI*(Ft - F0)
+          ztheta  = -zI*eps_g*(Ft - F0) +zI* ww * tt -gamma*tt
 
           ss = ss + (exp(ztheta) - exp(ztheta0))
 
@@ -154,7 +154,7 @@ subroutine calc_delta_Dj_kane
 !$omp end do
 !$omp end parallel  
 
-  open(20,file='delta_jdos_parabolic_kane.out')
+  open(20,file='delta_jdos_kane_band.out')
   do iw =0,nw
     ww = wi + dw*iw
     write(20,*)ww,delta_Dj_w(iw)

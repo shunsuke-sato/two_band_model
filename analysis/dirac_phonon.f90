@@ -47,8 +47,24 @@ end program main
 subroutine one_electron_system
   use global_variables
   implicit none
+
+  call init_one_electron_system
+
+end subroutine one_electron_system
+!----------------------------------------------------------------------------------------!
+subroutine init_one_electron_system
+  use global_variables
+  implicit none
   integer :: idim_elec, jdim_elec, idim_ph, jdim_ph
   integer :: idim, jdim
+!LAPACK
+  integer :: lwork
+  real(8),allocatable :: work_lp(:),amat(:,:)
+  real(8),allocatable :: rwork(:),w(:)
+  integer :: info
+
+
+
 
   ndim_elec    = 4
   ndim_phonon  = 1 + nph_cutoff
@@ -106,10 +122,11 @@ subroutine one_electron_system
             end if
           end if
 
+        end do
+      end do
     end do
   end do
 
+Call dsyev('Vectors', 'Upper', n, a, lda, w, work, lwork, info)
 
-
-
-end subroutine one_electron_system
+end subroutine init_one_electron_system

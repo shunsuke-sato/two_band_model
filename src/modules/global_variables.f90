@@ -28,6 +28,8 @@ module global_variables
   real(8),parameter :: eps_g = 9d0/(2d0*Ry)  !1.52d0/(2d0*Ry) 
   real(8),parameter :: mass_r = 0.4d0 !1d0/(1d0/0.57d0+1d0/0.067d0)
   real(8),parameter :: piz_vc = 0.5d0*sqrt(eps_g/mass_r)
+  real(8),parameter :: pix_vc = piz_vc
+  real(8),parameter :: piy_vc = 0d0
   real(8),parameter :: fact_intra = 1d0
   integer,parameter :: nband_type = N_PARABOLIC_BAND !N_NONPARABOLIC_BAND
 

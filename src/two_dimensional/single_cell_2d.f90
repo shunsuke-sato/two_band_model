@@ -30,6 +30,7 @@ subroutine single_cell_2d
     write(*,*)'it=',it,'/',Nt
     call dt_evolve_2d(it)
     call current_2d(jxy_intra,jxy_inter)
+    jt_xy(it+1,1:2) = jxy_intra(:) + jxy_inter(:)
   end do
 
   open(21,file='Act_jt.out')

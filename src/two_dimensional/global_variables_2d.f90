@@ -12,4 +12,4 @@ module global_variables_2d
   real(8),allocatable :: Act_xy(:,:),jt_xy(:,:)
   real(8) :: dir_pol_1(3),dir_pol_2(3)
 
-oend module global_variables_2d
+end module global_variables_2d

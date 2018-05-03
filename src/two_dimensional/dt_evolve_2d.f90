@@ -41,7 +41,7 @@ subroutine dt_evolve_2d(it)
   do ikx = -NKx,NKx
   do iky = -NKy,NKy
 
-    alpha = piz_vc*Etz0/deps(ikx,iky)
+    alpha = (pix_vc*Etx+piy_vc*Ety)/deps(ikx,iky)
     lambda_v = 0.5d0*(deps(ikx,iky)-sqrt(deps(ikx,iky)**2+4d0*alpha**2))
     lambda_c = 0.5d0*(deps(ikx,iky)+sqrt(deps(ikx,iky)**2+4d0*alpha**2))
     zx = zi*alpha/(deps(ikr,ikz)-lambda_v)

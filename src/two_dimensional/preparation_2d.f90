@@ -9,7 +9,6 @@ subroutine preparation_2d
   implicit none
   integer :: ikx,iky
 
-
   allocate(zCt(2,-NKx:NKx,-Nky:NKy),deps(-NKx:NKx,-NKy:NKy))
   allocate(kx0(-NKx:NKx),kx(-NKx:NKx))
   allocate(ky0(-NKy:NKy),ky(-NKy:NKy))
@@ -30,7 +29,7 @@ subroutine preparation_2d
   end do
   ky = ky0
 
-  call set_deps
+  call set_deps_2d
 
   return
 end subroutine preparation

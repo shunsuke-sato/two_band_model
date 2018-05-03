@@ -19,6 +19,7 @@ set(PREP_LIB   "preparation_lib")
 set(PROP_LIB   "propagation_lib")
 set(ANALY_LIB   "analysis_lib")
 set(MS_LIB   "multi_scale_lib")
+set(TWO_D_LIB   "two_dimensional_lib")
 
 set(SRC_DIR "./src")
 add_subdirectory(${SRC_DIR})

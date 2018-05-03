@@ -111,8 +111,8 @@ subroutine input_Ac_2d
     stop "Invalid envelope_2"
   end select
 
-  Act_xy(:,1) = dir_pol(1)*Act_pump(:) + dir_pol(1)*Act_probe(:)
-  Act_xy(:,2) = dir_pol(2)*Act_pump(:) + dir_pol(2)*Act_probe(:)
+  Act_xy(:,1) = dir_pol_1(1)*Act_pump(:) + dir_pol_2(1)*Act_probe(:)
+  Act_xy(:,2) = dir_pol_1(2)*Act_pump(:) + dir_pol_2(2)*Act_probe(:)
 
 
   return

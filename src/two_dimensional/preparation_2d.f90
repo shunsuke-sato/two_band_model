@@ -20,7 +20,7 @@ subroutine preparation_2d
   dky = ky_max/dble(NKy)
 
   do ikx = -NKx,NKx
-    kx0(ikz) = dkx*dble(ikx)
+    kx0(ikx) = dkx*dble(ikx)
   end do
   kx = kx0
 
@@ -32,4 +32,4 @@ subroutine preparation_2d
   call set_deps_2d
 
   return
-end subroutine preparation
+end subroutine preparation_2d

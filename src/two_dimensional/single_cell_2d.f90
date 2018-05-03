@@ -7,7 +7,8 @@
 subroutine single_cell_2d
   use global_variables_2d
   implicit none
-
+  integer :: it
+  real(8) :: jxy_intra(2), jxy_inter(2)
 
   if(Nprocs /= 1)call err_finalize("Parallelization is not supported &
     for single-cell calculation.")

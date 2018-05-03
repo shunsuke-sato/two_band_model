@@ -13,10 +13,10 @@ subroutine set_band_velocity_2d(vk_xy)
   select case(nband_type)
   case(N_PARABOLIC_BAND)
     do ikx = -NKx,NKx
-      vk_xy(1,ix,iy) = kx(ikx)/mass_r
+      vk_xy(1,ikx,iky) = kx(ikx)/mass_r
     end do
     do iky = -NKy,NKy
-      vk_xy(2,ix,iy) = ky(iky)/mass_r
+      vk_xy(2,ikx,iky) = ky(iky)/mass_r
     end do
   case default
     write(*,"(A,2x,A)")"Invalid nband_type",nband_type

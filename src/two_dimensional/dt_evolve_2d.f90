@@ -44,7 +44,7 @@ subroutine dt_evolve_2d(it)
     alpha = (pix_vc*Etx+piy_vc*Ety)/deps(ikx,iky)
     lambda_v = 0.5d0*(deps(ikx,iky)-sqrt(deps(ikx,iky)**2+4d0*alpha**2))
     lambda_c = 0.5d0*(deps(ikx,iky)+sqrt(deps(ikx,iky)**2+4d0*alpha**2))
-    zx = zi*alpha/(deps(ikr,ikz)-lambda_v)
+    zx = zi*alpha/(deps(ikx,iky)-lambda_v)
     zy = zi*alpha/lambda_c
 
     ss = 1d0/sqrt(1d0+abs(zx)**2)

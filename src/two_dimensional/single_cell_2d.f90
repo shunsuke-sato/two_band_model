@@ -24,7 +24,19 @@ subroutine single_cell_2d
   read(*,*)Tdelay_fs
 
   call preparation_2d
+  call input_Ac_2d
 
-  call set_deps_2d
+  do it = 0,Nt
+    write(*,*)'it=',it,'/',Nt
+    call dt_evolve_2d(it)
+    call current_2d(jxy_intra,jxy_inter)
+  end do
+
+  open(21,file='Act_jt.out')
+  do it = 0,Nt
+    write(21,'(999e26.16e3)')dt*dble(it),Act_xy(it,1:2),jt_xy(it,1:2) &
+      ,-0.5d0*(Act_xy(it+1,1:2)-Act_xy(it-1,1:2))/dt
+  end do
+  close(21)
 
 end subroutine single_cell_2d

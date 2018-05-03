@@ -8,21 +8,18 @@ set(CMAKE_Fortran_COMPILER      "mpif90")
 set(CMAKE_Fortran_FLAGS   "-O0 -fopenmp")
 #set(CMAKE_Fortran_FLAGS   "-O3 -ipo -xHOST -qopenmp")
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_BINARY_DIR})
+
 set(TARGET_NAME   "panda")
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR})
 
-set(PANDA_SOURCES   src/main.f90 src/single_cell.f90)
-file(GLOB MOD_SRC      src/modules/*.f90)
-file(GLOB PREP_SRC     src/preparation/*.f90)
-file(GLOB PROP_SRC     src/propagation/*.f90)
-file(GLOB ANA_SRC      src/analysis/*.f90)
-file(GLOB MS_SRC       src/multi_scale/*.f90)
-list(APPEND PANDA_SOURCES 
-            ${MOD_SRC}
-            ${PREP_SRC}
-            ${PROP_SRC}
-            ${ANA_SRC}
-            ${MS_SRC}
-)
+set(MOD_LIB "module_lib")
+set(MAIN_LIB "main_lib")
+set(PREP_LIB   "preparation_lib")
+set(PROP_LIB   "propagation_lib")
+set(ANALY_LIB   "analysis_lib")
+set(MS_LIB   "multi_scale_lib")
 
-add_executable(${TARGET_NAME} ${PANDA_SOURCES})
+set(SRC_DIR "./src")
+add_subdirectory(${SRC_DIR})
+

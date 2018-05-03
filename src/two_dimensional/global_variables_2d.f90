@@ -9,7 +9,7 @@ module global_variables_2d
   use global_variables
   use mpi_module
 
-  real(8),allocatable :: Act_xy(:)
+  real(8),allocatable :: Act_xy(:,:),jt_xy(:,:)
   real(8) :: dir_pol_1(3),dir_pol_2(3)
 
-end module global_variables_2d
+oend module global_variables_2d

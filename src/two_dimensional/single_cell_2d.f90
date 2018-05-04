@@ -8,7 +8,7 @@ subroutine single_cell_2d
   use global_variables_2d
   implicit none
   integer :: it
-  real(8) :: jxy_intra(2), jxy_inter(2)
+  real(8) :: jxyz_intra(3), jxyz_inter(3)
 
   if(Nprocs /= 1)call err_finalize("Parallelization is not supported &
     for single-cell calculation.")
@@ -30,7 +30,7 @@ subroutine single_cell_2d
   do it = 0,Nt
     write(*,*)'it=',it,'/',Nt
     call dt_evolve_2d(it)
-    call current_2d(jxy_intra,jxy_inter)
+    call current_2d(jxyz_intra,jxyz_inter)
     jt_xy(it+1,1:2) = jxy_intra(:) + jxy_inter(:)
   end do
 

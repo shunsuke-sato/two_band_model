@@ -62,8 +62,8 @@ subroutine dt_evolve_2d(it)
     zy = sum(conjg(zeig_vec_c(:))*zCt(:,ikx,iky))
 
 
-    zx = zx * exp(-zI*lambda_v*0.5d0*dt)
-    zy = zy * exp(-zI*lambda_c*0.5d0*dt)
+    zx = zx * exp(-zI*lambda_v*dt)
+    zy = zy * exp(-zI*lambda_c*dt)
 
     zCt(:,ikx,iky) = zx*zeig_vec_v(:) + zy*zeig_vec_c(:)
 

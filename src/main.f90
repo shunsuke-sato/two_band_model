@@ -45,4 +45,6 @@ program main
   Time_now=MPI_WTIME()
   if (Myrank == 0 ) write(*,"(A,2x,e16.6e3,A)") 'Total time =',(Time_now-Time_start),'sec'
 
+  call MPI_finalize(ierr)
+
 end program main

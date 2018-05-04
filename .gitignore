@@ -11,7 +11,7 @@
 *.mod
 
 # Executable files
-koala
+panda
 
 # Libraries
 *.lib

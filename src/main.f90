@@ -1,5 +1,5 @@
 !---------------------------------------------------!
-! Copyright (c) 2016 Shunsuke A. Sato               !
+! Copyright (c) 2017 Shunsuke A. Sato               !
 ! Released under the MIT license                    !
 ! https://opensource.org/licenses/mit-license.php   !
 !---------------------------------------------------!
@@ -33,6 +33,8 @@ program main
   select case(calc_mode)
   case("single-cell","SC","sc")
     call single_cell
+  case("sc_2d")
+    call single_cell_2d
   case("multi-scale","MS","ms")
     call multi_scale
   case default
@@ -42,5 +44,7 @@ program main
       
   Time_now=MPI_WTIME()
   if (Myrank == 0 ) write(*,"(A,2x,e16.6e3,A)") 'Total time =',(Time_now-Time_start),'sec'
+
+  call MPI_finalize(ierr)
 
 end program main

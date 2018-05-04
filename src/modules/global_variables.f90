@@ -22,12 +22,14 @@ module global_variables
 
 
 ! Material parameters
-  integer :: NKr,NKz
-  real(8) :: kr_max,kz_max,dkr,dkz
-  real(8),allocatable :: kr(:),kz0(:),kz(:)
+  integer :: NKr,NKz, NKx, NKy
+  real(8) :: kr_max,kz_max,dkr,dkz, kx_max, ky_max, dkx,dky
+  real(8),allocatable :: kr(:),kz0(:),kz(:),kx0(:),ky0(:),kx(:),ky(:)
   real(8),parameter :: eps_g = 9d0/(2d0*Ry)  !1.52d0/(2d0*Ry) 
   real(8),parameter :: mass_r = 0.4d0 !1d0/(1d0/0.57d0+1d0/0.067d0)
   real(8),parameter :: piz_vc = 0.5d0*sqrt(eps_g/mass_r)
+  real(8),parameter :: pix_vc = piz_vc
+  real(8),parameter :: piy_vc = 0d0
   real(8),parameter :: fact_intra = 1d0
   integer,parameter :: nband_type = N_PARABOLIC_BAND !N_NONPARABOLIC_BAND
 
@@ -41,6 +43,7 @@ module global_variables
   complex(8),allocatable :: zCt(:,:,:)
   real(8),allocatable :: Act(:),Act_dt2(:),jtz(:),jtz_intra(:),jtz_inter(:)
   real(8),allocatable :: Act_pump(:),Act_probe(:)
+  real(8),allocatable :: Act_xyz(:,:),jt_xyz(:,:)
   character(20) :: envelope_1,envelope_2
 
 ! Laser parameters

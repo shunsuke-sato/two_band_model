@@ -26,12 +26,12 @@ subroutine current_2d(jxyz_intra,jxyz_inter)
   end do
   end do
 
-  jxyz_intra(1) = jx*dkx*dky
-  jxyz_intra(2) = jy*dkx*dky
+  jxyz_intra(1) = 2d0*jx*dkx*dky
+  jxyz_intra(2) = 2d0*jy*dkx*dky
   jxyz_intra(3) = 0d0
-  jxyz_inter(1) = pix_vc*tmp*dkx*dky
-  jxyz_inter(2) = piy_vc*tmp*dkx*dky
-  jxyz_inter(3) = piz_vc*tmp*dkx*dky
+  jxyz_inter(1) = 2d0*pix_vc*tmp*dkx*dky
+  jxyz_inter(2) = 2d0*piy_vc*tmp*dkx*dky
+  jxyz_inter(3) = 2d0*piz_vc*tmp*dkx*dky
 
   return
 end subroutine current_2d

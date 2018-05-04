@@ -31,13 +31,13 @@ subroutine single_cell_2d
     write(*,*)'it=',it,'/',Nt
     call dt_evolve_2d(it)
     call current_2d(jxyz_intra,jxyz_inter)
-    jt_xy(it+1,1:2) = jxy_intra(:) + jxy_inter(:)
+    jt_xyz(it+1,1:2) = jxyz_intra(:) + jxyz_inter(:)
   end do
 
   open(21,file='Act_jt.out')
   do it = 0,Nt
-    write(21,'(999e26.16e3)')dt*dble(it),Act_xy(it,1:2),jt_xy(it,1:2) &
-      ,-0.5d0*(Act_xy(it+1,1:2)-Act_xy(it-1,1:2))/dt
+    write(21,'(999e26.16e3)')dt*dble(it),Act_xyz(it,1:3),jt_xyz(it,1:3) &
+      ,-0.5d0*(Act_xyz(it+1,1:3)-Act_xyz(it-1,1:3))/dt
   end do
   close(21)
 

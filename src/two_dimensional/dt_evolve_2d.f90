@@ -17,9 +17,9 @@ subroutine dt_evolve_2d(it)
 
   select case(npump_probe_type)
   case(N_COMBINED_PUMP_PROBE)
-    Etx = -0.5d0*(Act_xyz(it+1,1)-Act_xyz(it,1))/dt
-    Ety = -0.5d0*(Act_xyz(it+1,2)-Act_xyz(it,2))/dt
-    Etz = -0.5d0*(Act_xyz(it+1,3)-Act_xyz(it,3))/dt
+    Etx = -(Act_xyz(it+1,1)-Act_xyz(it,1))/dt
+    Ety = -(Act_xyz(it+1,2)-Act_xyz(it,2))/dt
+    Etz = -(Act_xyz(it+1,3)-Act_xyz(it,3))/dt
     Acx = 0.5d0*(Act_xyz(it+1,1) + Act_xyz(it,1))
     Acy = 0.5d0*(Act_xyz(it+1,2) + Act_xyz(it,2))
     Acz = 0.5d0*(Act_xyz(it+1,3) + Act_xyz(it,3))

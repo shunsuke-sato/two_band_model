@@ -7,7 +7,7 @@
 subroutine current_2d(jxyz_intra,jxyz_inter)
   use global_variables_2d
   implicit none
-  real(8),intent(out) :: jxy_intra(3),jxy_inter(3)
+  real(8),intent(out) :: jxyz_intra(3),jxyz_inter(3)
   real(8) :: vk_xy(2,-NKx:NKx,-NKy:NKy)
   real(8) :: tmp
   integer :: ikx,iky

@@ -20,9 +20,9 @@ subroutine dt_evolve_2d(it)
     Etx = -0.5d0*(Act_xyz(it+1,1)-Act_xyz(it,1))/dt
     Ety = -0.5d0*(Act_xyz(it+1,2)-Act_xyz(it,2))/dt
     Etz = -0.5d0*(Act_xyz(it+1,3)-Act_xyz(it,3))/dt
-    Acx = 0.5d0*(Act_xyx(it+1,1) + Act_xyx(it,1))
-    Acy = 0.5d0*(Act_xyx(it+1,2) + Act_xyx(it,2))
-    Acz = 0.5d0*(Act_xyx(it+1,3) + Act_xyx(it,3))
+    Acx = 0.5d0*(Act_xyz(it+1,1) + Act_xyz(it,1))
+    Acy = 0.5d0*(Act_xyz(it+1,2) + Act_xyz(it,2))
+    Acz = 0.5d0*(Act_xyz(it+1,3) + Act_xyz(it,3))
   case default
     write(*,"(A,2x,A)")"Invalid npump_probe_type",npump_probe_type
   end select

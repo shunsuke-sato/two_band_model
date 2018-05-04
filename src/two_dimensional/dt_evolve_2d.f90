@@ -8,19 +8,21 @@ subroutine dt_evolve_2d(it)
   use global_variables_2d
   implicit none
   integer,intent(in) :: it
-  real(8) :: Etx, Ety, Acx, Acy
+  real(8) :: Etx, Ety, Etz, Acx, Acy, Acz
   real(8) :: lambda_v,lambda_c,theta_p,theta_m,eps_p,eps_m
-  real(8) :: alpha,ss
+  real(8) :: alpha,ss,pi_dot_E
   complex(8) :: zx,zy
   integer :: ikx,iky
   complex(8) :: zeig_vec_v(2), zeig_vec_c(2)
 
   select case(npump_probe_type)
   case(N_COMBINED_PUMP_PROBE)
-    Etx = -0.5d0*(Act_xy(it+1,1)-Act_xy(it,1))/dt
-    Ety = -0.5d0*(Act_xy(it+1,2)-Act_xy(it,2))/dt
-    Acx = 0.5d0*(Act_xy(it+1,1) + Act_xy(it,1))
-    Acy = 0.5d0*(Act_xy(it+1,2) + Act_xy(it,2))
+    Etx = -0.5d0*(Act_xyz(it+1,1)-Act_xyz(it,1))/dt
+    Ety = -0.5d0*(Act_xyz(it+1,2)-Act_xyz(it,2))/dt
+    Etz = -0.5d0*(Act_xyz(it+1,3)-Act_xyz(it,3))/dt
+    Acx = 0.5d0*(Act_xyx(it+1,1) + Act_xyx(it,1))
+    Acy = 0.5d0*(Act_xyx(it+1,2) + Act_xyx(it,2))
+    Acz = 0.5d0*(Act_xyx(it+1,3) + Act_xyx(it,3))
   case default
     write(*,"(A,2x,A)")"Invalid npump_probe_type",npump_probe_type
   end select
@@ -38,10 +40,11 @@ subroutine dt_evolve_2d(it)
 
   call set_deps_2d
   
+  pi_dot_E = pix_vc*Etx + piy_vc*Ety + piz_vc*Etz
   do ikx = -NKx,NKx
   do iky = -NKy,NKy
 
-    alpha = (pix_vc*Etx+piy_vc*Ety)/deps(ikx,iky)
+    alpha = pi_dot_E/deps(ikx,iky)
     lambda_v = 0.5d0*(deps(ikx,iky)-sqrt(deps(ikx,iky)**2+4d0*alpha**2))
     lambda_c = 0.5d0*(deps(ikx,iky)+sqrt(deps(ikx,iky)**2+4d0*alpha**2))
     zx = zi*alpha/(deps(ikx,iky)-lambda_v)

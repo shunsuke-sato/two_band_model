@@ -11,7 +11,7 @@ subroutine set_deps_2d
 
   select case(nband_type)
   case(N_PARABOLIC_BAND)
-!$omp parallel do private(ikx, iky)
+!$omp parallel do private(ikx, iky) collapse(2)
     do ikx = -NKx,NKx
       do iky = -NKy,NKy
         deps(ikx,iky) = eps_g + 0.5d0/mass_r*(kx(ikx)**2+ky(iky)**2)

@@ -12,9 +12,11 @@ subroutine set_band_velocity_2d(vk_xy)
 
   select case(nband_type)
   case(N_PARABOLIC_BAND)
+!$omp parallel do private(ikx)
     do ikx = -NKx,NKx
       vk_xy(1,ikx,:) = kx(ikx)/mass_r
     end do
+!$omp parallel do private(iky)
     do iky = -NKy,NKy
       vk_xy(2,:,iky) = ky(iky)/mass_r
     end do

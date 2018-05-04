@@ -41,6 +41,8 @@ subroutine dt_evolve_2d(it)
   call set_deps_2d
   
   pi_dot_E = pix_vc*Etx + piy_vc*Ety + piz_vc*Etz
+
+!$omp parallel do private(ikx,iky,alpha,lambda_v,lambda_c,zx,zy,ss,zeig_vec_v,zeig_vec_c) collapse(2)
   do ikx = -NKx,NKx
   do iky = -NKy,NKy
 

@@ -9,22 +9,26 @@ subroutine current_2d(jxyz_intra,jxyz_inter)
   implicit none
   real(8),intent(out) :: jxyz_intra(3),jxyz_inter(3)
   real(8) :: vk_xy(2,-NKx:NKx,-NKy:NKy)
-  real(8) :: tmp
+  real(8) :: tmp,jx,jy
   integer :: ikx,iky
   complex(8) :: zfact
 
   call set_band_velocity_2d(vk_xy)
 
-  jxyz_intra = 0d0
+  jx = 0d0; jy = 0d0
   tmp = 0d0
+!$omp parallel do private(ikx, iky) reduction(+:tmp,jx,jy) collapse(2)
   do ikx = -NKx,NKx
   do iky = -Nky,NKy
-    jxyz_intra(1:2) = jxyz_intra(1:2) + vk_xy(1:2,ikx,iky)*abs(zCt(2,ikx,iky))**2
+    jx = jx + vk_xy(1,ikx,iky)*abs(zCt(2,ikx,iky))**2
+    jy = jy + vk_xy(2,ikx,iky)*abs(zCt(2,ikx,iky))**2
     tmp = tmp + 2d0*real(conjg(zCt(1,ikx,iky))*zCt(2,ikx,iky))
   end do
   end do
   tmp = tmp*dkx*dky
-  jxyz_intra(:) = jxyz_intra(:)*dkx*dky
+  jxyz_intra(1) = jx*dkx*dky
+  jxyz_intra(2) = jy*dkx*dky
+  jxyz_intra(3) = 0d0
   jxyz_inter(1) = pix_vc*tmp*dkx*dky
   jxyz_inter(2) = piy_vc*tmp*dkx*dky
   jxyz_inter(3) = piz_vc*tmp*dkx*dky

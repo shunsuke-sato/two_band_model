@@ -25,7 +25,7 @@ subroutine current_2d(jxyz_intra,jxyz_inter)
     tmp = tmp + 2d0*real(conjg(zCt(1,ikx,iky))*zCt(2,ikx,iky))
   end do
   end do
-  tmp = tmp*dkx*dky
+
   jxyz_intra(1) = jx*dkx*dky
   jxyz_intra(2) = jy*dkx*dky
   jxyz_intra(3) = 0d0

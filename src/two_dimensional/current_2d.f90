@@ -18,7 +18,7 @@ subroutine current_2d(jxyz_intra,jxyz_inter)
   jxyz_intra = 0d0
   tmp = 0d0
   do ikx = -NKx,NKx
-  do iky = -Nky,NKz
+  do iky = -Nky,NKy
     jxyz_intra(1:2) = jxyz_intra(1:2) + vk_xy(1:2,ikx,iky)*abs(zCt(2,ikx,iky))**2
     tmp = tmp + 2d0*real(conjg(zCt(1,ikx,iky))*zCt(2,ikx,iky))
   end do

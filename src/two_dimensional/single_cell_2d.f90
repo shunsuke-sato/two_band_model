@@ -18,10 +18,10 @@ subroutine single_cell_2d
   read(*,*)Nt,dt
   read(*,*)envelope_1
   read(*,*)Iwcm2_1,omega_ev_1,tpulse_fs_1,CEP_2pi_1
-  read(*,*)dir_pol_1(1),dir_pol_2(1)
+  read(*,*)dir_pol_1(1:3)
   read(*,*)envelope_2
   read(*,*)Iwcm2_2,omega_ev_2,tpulse_fs_2,CEP_2pi_2
-  read(*,*)dir_pol_2(1),dir_pol_2(2)
+  read(*,*)dir_pol_2(1:3)
   read(*,*)Tdelay_fs
 
   call preparation_2d

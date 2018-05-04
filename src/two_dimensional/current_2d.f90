@@ -8,6 +8,7 @@ subroutine current_2d(jxyz_intra,jxyz_inter)
   use global_variables_2d
   implicit none
   real(8),intent(out) :: jxyz_intra(3),jxyz_inter(3)
+  real(8),parameter :: ss = 1d0/(2d0*pi)**2
   real(8) :: vk_xy(2,-NKx:NKx,-NKy:NKy)
   real(8) :: tmp,jx,jy
   integer :: ikx,iky
@@ -26,12 +27,12 @@ subroutine current_2d(jxyz_intra,jxyz_inter)
   end do
   end do
 
-  jxyz_intra(1) = 2d0*jx*dkx*dky
-  jxyz_intra(2) = 2d0*jy*dkx*dky
+  jxyz_intra(1) = 2d0*jx*dkx*dky*ss
+  jxyz_intra(2) = 2d0*jy*dkx*dky*ss
   jxyz_intra(3) = 0d0
-  jxyz_inter(1) = 2d0*pix_vc*tmp*dkx*dky
-  jxyz_inter(2) = 2d0*piy_vc*tmp*dkx*dky
-  jxyz_inter(3) = 2d0*piz_vc*tmp*dkx*dky
+  jxyz_inter(1) = 2d0*pix_vc*tmp*dkx*dky*ss
+  jxyz_inter(2) = 2d0*piy_vc*tmp*dkx*dky*ss
+  jxyz_inter(3) = 2d0*piz_vc*tmp*dkx*dky*ss
 
   return
 end subroutine current_2d

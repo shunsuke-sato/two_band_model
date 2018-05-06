@@ -90,6 +90,7 @@ subroutine dt_evolve_2d_nagative_mass(pi_dot_E)
   integer :: ikx,iky
   complex(8) :: zeig_vec_v(2), zeig_vec_c(2)
   real(8)  :: d_dot_E(-NKx:NKx,-NKy:NKy)
+  complex(8) :: zmat(2,2)
 
   do ikx = -NKx,NKx
   do iky = -NKy,NKy
@@ -107,29 +108,42 @@ subroutine dt_evolve_2d_nagative_mass(pi_dot_E)
   do iky = -NKy,NKy
 
 !    alpha = pi_dot_E/deps(ikx,iky)
-    alpha = d_dot_E(ikx,iky)
-    lambda_v = 0.5d0*(deps(ikx,iky)-sqrt(deps(ikx,iky)**2+4d0*alpha**2))
-    lambda_c = 0.5d0*(deps(ikx,iky)+sqrt(deps(ikx,iky)**2+4d0*alpha**2))
-    zx = zi*alpha/(deps(ikx,iky)-lambda_v)
-    zy = zi*alpha/lambda_c
+    zmat(1,2) = zI*d_dot_E(ikx,iky)
+    zmat(2,1) = conjg(zmat(1,2))
+    zmat(1,1) = 0d0
+    zmat(2,2) = deps(ikx,iky)
 
-    ss = 1d0/sqrt(1d0+abs(zx)**2)
-    zeig_vec_v(1) = ss; zeig_vec_v(2) = zx*ss
-
-    ss = 1d0/sqrt(abs(zy)**2+1d0)
-    zeig_vec_c(1) = zy*ss; zeig_vec_c(2) = ss
-
-    zx = sum(conjg(zeig_vec_v(:))*zCt(:,ikx,iky))
-    zy = sum(conjg(zeig_vec_c(:))*zCt(:,ikx,iky))
-
-
-    zx = zx * exp(-zI*lambda_v*dt)
-    zy = zy * exp(-zI*lambda_c*dt)
-
-    zCt(:,ikx,iky) = zx*zeig_vec_v(:) + zy*zeig_vec_c(:)
+    zmat = -zI*dt*zmat
+    call dt_evolve_Taylor(zCt(1:2,ikx,iky),zmat)
 
   end do
   end do
 
 
 end subroutine dt_evolve_2d_nagative_mass
+
+subroutine dt_evolve_Taylor(zpsi,zmat)
+  implicit none
+  complex(8),intent(inout) :: zpsi(2)
+  complex(8),intent(in) :: zmat(2,2)
+  integer,parameter :: ntaylor = 4
+  complex(8) :: zhpsi(2)
+  real(8) :: fact
+
+  fact = 1d0
+  zhpsi = matmul(zmat,zpsi)
+  zpsi = zpsi + zhpsi
+
+  fact = fact/2d0
+  zhpsi = matmul(zmat,zhpsi)
+  zpsi = zpsi + fact*zhpsi
+
+  fact = fact/3d0
+  zhpsi = matmul(zmat,zhpsi)
+  zpsi = zpsi + fact*zhpsi
+
+  fact = fact/4d0
+  zhpsi = matmul(zmat,zhpsi)
+  zpsi = zpsi + fact*zhpsi
+
+end subroutine dt_evolve_Taylor

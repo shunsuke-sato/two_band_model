@@ -23,6 +23,13 @@ subroutine dt_evolve_2d(it)
     Acx = 0.5d0*(Act_xyz(it+1,1) + Act_xyz(it,1))
     Acy = 0.5d0*(Act_xyz(it+1,2) + Act_xyz(it,2))
     Acz = 0.5d0*(Act_xyz(it+1,3) + Act_xyz(it,3))
+  case(N_DECOMPOSED_PUMP_PROBE)
+    Etx = -(Act_probe_xyz(it+1,1)-Act_probe_xyz(it,1))/dt
+    Ety = -(Act_probe_xyz(it+1,2)-Act_probe_xyz(it,2))/dt
+    Etz = -(Act_probe_xyz(it+1,3)-Act_probe_xyz(it,3))/dt
+    Acx = 0.5d0*(Act_pump_xyz(it+1,1) + Act_pump_xyz(it,1))
+    Acy = 0.5d0*(Act_pump_xyz(it+1,2) + Act_pump_xyz(it,2))
+    Acz = 0.5d0*(Act_pump_xyz(it+1,3) + Act_pump_xyz(it,3))
   case default
     write(*,"(A,2x,A)")"Invalid npump_probe_type",npump_probe_type
   end select
@@ -73,6 +80,21 @@ subroutine dt_evolve_2d(it)
     zCt(:,ikx,iky) = zx*zeig_vec_v(:) + zy*zeig_vec_c(:)
 
   end do
+  end do
+
+! Update k-vector
+  Acx = Act_xyz(it+1,1)
+  Acy = Act_xyz(it+1,2)
+  Acz = Act_xyz(it+1,3)
+
+!$omp parallel do private(ikx)
+  do ikx = -NKx,NKx
+    kx(ikx) = kx0(ikx) + Acx*fact_intra
+  end do
+
+!$omp parallel do private(iky)
+  do iky = -NKy,NKy
+    ky(iky) = ky0(iky) + Acy*fact_intra
   end do
 
 

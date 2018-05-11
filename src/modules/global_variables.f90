@@ -43,7 +43,7 @@ module global_variables
   complex(8),allocatable :: zCt(:,:,:)
   real(8),allocatable :: Act(:),Act_dt2(:),jtz(:),jtz_intra(:),jtz_inter(:)
   real(8),allocatable :: Act_pump(:),Act_probe(:)
-  real(8),allocatable :: Act_xyz(:,:),jt_xyz(:,:)
+  real(8),allocatable :: Act_xyz(:,:),Act_pump_xyz(:,:),Act_probe_xyz(:,:),jt_xyz(:,:)
   character(20) :: envelope_1,envelope_2
 
 ! Laser parameters

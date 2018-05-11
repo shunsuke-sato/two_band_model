@@ -15,7 +15,7 @@ subroutine current_2d(jxyz_intra,jxyz_inter)
   complex(8) :: zfact
 
   if(mass_r < 0d0)then
-    call current_2d_nagative_mass(jxyz_intra,jxyz_inter)
+    call current_2d_negative_mass(jxyz_intra,jxyz_inter)
     return
   end if
 

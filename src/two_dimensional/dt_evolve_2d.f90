@@ -105,7 +105,7 @@ subroutine dt_evolve_2d_nagative_mass(pi_dot_E)
   use global_variables_2d
   implicit none
   real(8),intent(in) :: pi_dot_E
-  real(8),parameter :: Ecut = 3d0/ev
+  real(8),parameter :: Ecut = 4.5d0/ev, dE = eps_g - Ecut
   real(8) :: lambda_v,lambda_c,theta_p,theta_m,eps_p,eps_m
   real(8) :: alpha,ss
   complex(8) :: zx,zy
@@ -117,7 +117,8 @@ subroutine dt_evolve_2d_nagative_mass(pi_dot_E)
   do ikx = -NKx,NKx
   do iky = -NKy,NKy
     if(deps(ikx,iky)>Ecut)then
-      d_dot_E(ikx,iky) = pi_dot_E/deps(ikx,iky)
+!      d_dot_E(ikx,iky) = pi_dot_E/deps(ikx,iky)
+      d_dot_E(ikx,iky) = pi_dot_E/deps(ikx,iky)*sin(0.5d0*pi*((deps(ikx,iky)-Ecut)/dE))**2
     else
       d_dot_E(ikx,iky) = 0d0
     end if

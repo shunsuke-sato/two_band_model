@@ -17,6 +17,7 @@ module global_variables
   integer,parameter :: N_PARABOLIC_BAND = 0
   integer,parameter :: N_NONPARABOLIC_BAND = 1
   integer,parameter :: N_COS_BAND = 2
+  integer,parameter :: N_COS4_BAND = 3
 ! Pump-probe parameters
   integer,parameter :: N_COMBINED_PUMP_PROBE = 0
   integer,parameter :: N_DECOMPOSED_PUMP_PROBE = 1

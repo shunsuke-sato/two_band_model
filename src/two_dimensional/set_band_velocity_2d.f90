@@ -31,6 +31,18 @@ subroutine set_band_velocity_2d(vk_xy)
         vk_xy(2,ikx,iky) = 0.5d0*band_width*dipy*cos(dipx*kx(ikx))*sin(dipy*ky(iky))
       end do
     end do
+  case(N_COS4_BAND)
+    dipx = pi/kx_max
+    dipy = pi/ky_max
+!$omp parallel do private(ikx, iky) collapse(2)
+    do ikx = -NKx,NKx
+      do iky = -NKy,NKy
+        vk_xy(1,ikx,iky) = 4d0*band_width*dipx&
+          *cos(dipx*kx(ikx))**3*sin(dipx*kx(ikx))*cos(dipy*ky(iky))**4
+        vk_xy(2,ikx,iky) = 4d0*band_width*dipy&
+          *cos(dipy*ky(iky))**3*sin(dipy*ky(iky))*cos(dipx*kx(ikx))**4
+      end do
+    end do
   case default
     write(*,"(A,2x,A)")"Invalid nband_type",nband_type
     stop

@@ -30,7 +30,7 @@ subroutine preparation_2d
       ky0(iky) = dky*dble(iky)
     end do
 
-  case(N_COS_BAND)
+  case(N_COS_BAND, N_COS4_BAND)
 
     dkx = kx_max/dble(2*NKx+2)
     dky = ky_max/dble(2*NKy+2)

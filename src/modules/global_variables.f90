@@ -16,6 +16,7 @@ module global_variables
 ! Band structure parameters
   integer,parameter :: N_PARABOLIC_BAND = 0
   integer,parameter :: N_NONPARABOLIC_BAND = 1
+  integer,parameter :: N_COS_BAND = 2
 ! Pump-probe parameters
   integer,parameter :: N_COMBINED_PUMP_PROBE = 0
   integer,parameter :: N_DECOMPOSED_PUMP_PROBE = 1
@@ -32,6 +33,7 @@ module global_variables
   real(8),parameter :: piy_vc = 0d0
   real(8),parameter :: fact_intra = 1d0
   integer,parameter :: nband_type = N_PARABOLIC_BAND !N_NONPARABOLIC_BAND
+  real(8),parameter :: band_width = 3d0/ev !1d0/(1d0/0.57d0+1d0/0.067d0)
 
 
 

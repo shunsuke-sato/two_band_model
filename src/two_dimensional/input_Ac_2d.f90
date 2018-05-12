@@ -12,6 +12,7 @@ subroutine input_Ac_2d
   real(8) :: Es,Up,alpha
 
   allocate(Act_xyz(-1:Nt+2,3),jt_xyz(0:Nt+1,3))
+  allocate(Act_pump_xyz(-1:Nt+2,3),Act_probe_xyz(-1:Nt+2,3))
   allocate(Act_pump(-1:Nt+2),Act_probe(-1:Nt+2) )
 
   E0_1=5.338d-9*sqrt(Iwcm2_1)
@@ -111,9 +112,17 @@ subroutine input_Ac_2d
     stop "Invalid envelope_2"
   end select
 
-  Act_xyz(:,1) = dir_pol_1(1)*Act_pump(:) + dir_pol_2(1)*Act_probe(:)
-  Act_xyz(:,2) = dir_pol_1(2)*Act_pump(:) + dir_pol_2(2)*Act_probe(:)
-  Act_xyz(:,3) = dir_pol_1(3)*Act_pump(:) + dir_pol_2(3)*Act_probe(:)
+  Act_pump_xyz(:,1) = dir_pol_1(1)*Act_pump(:)
+  Act_pump_xyz(:,2) = dir_pol_1(2)*Act_pump(:)
+  Act_pump_xyz(:,3) = dir_pol_1(3)*Act_pump(:)
+
+  Act_probe_xyz(:,1) = dir_pol_2(1)*Act_probe(:)
+  Act_probe_xyz(:,2) = dir_pol_2(2)*Act_probe(:)
+  Act_probe_xyz(:,3) = dir_pol_2(3)*Act_probe(:)
+
+  Act_xyz(:,:) =   Act_pump_xyz(:,:) + Act_probe_xyz(:,:)
+
+
 
 
   return

@@ -126,7 +126,7 @@ subroutine dt_evolve_2d_nagative_mass(pi_dot_E)
   end do
 
 
-!$omp parallel do private(ikx,iky,alpha,lambda_v,lambda_c,zx,zy,ss,zeig_vec_v,zeig_vec_c) collapse(2)
+!$omp parallel do private(ikx,iky, zmat) collapse(2)
   do ikx = -NKx,NKx
   do iky = -NKy,NKy
 

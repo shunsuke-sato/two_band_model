@@ -44,6 +44,19 @@ subroutine preparation_2d
       ky0(iky) = dky*dble(iky)
     end do
 
+  case(N_HBN_BAND)
+
+    dkx = kx_max/dble(2*NKx+2)
+    dky = ky_max/dble(NKy)
+
+    do ikx = -NKx,NKx
+      kx0(ikx) = dkx*dble(ikx)
+    end do
+
+    do iky = -NKy,NKy
+      ky0(iky) = dky*dble(iky)
+    end do
+    
 
   case default
     write(*,"(A,2x,A)")"Invalid nband_type",nband_type

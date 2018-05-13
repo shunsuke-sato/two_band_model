@@ -9,7 +9,7 @@ subroutine set_band_velocity_2d(vk_xy)
   implicit none
   real(8),intent(out) :: vk_xy(2,-NKx:NKx,-NKy:NKy)
   integer :: ikx,iky
-  real(8) :: dipx, dipy
+  real(8) :: dipx, dipy, mu_y
 
   select case(nband_type)
   case(N_PARABOLIC_BAND)
@@ -41,6 +41,16 @@ subroutine set_band_velocity_2d(vk_xy)
           *cos(dipx*kx(ikx))**3*sin(dipx*kx(ikx))*cos(dipy*ky(iky))**4
         vk_xy(2,ikx,iky) = 4d0*band_width*dipy&
           *cos(dipy*ky(iky))**3*sin(dipy*ky(iky))*cos(dipx*kx(ikx))**4
+      end do
+    end do
+  case(N_HBN_BAND)
+    dipx = 2d0*pi/kx_max
+    mu_y = 2d0/(dipx**2*band_width)
+!$omp parallel do private(ikx, iky) collapse(2)
+    do ikx = -NKx,NKx
+      do iky = -NKy,NKy
+        vk_xy(1,ikx,iky) = dipx*0.5d0*band_width*sin(dipx*kx(ikx))
+        vk_xy(2,ikx,iky) = ky(iky)/mu_y
       end do
     end do
   case default

@@ -105,7 +105,7 @@ subroutine dt_evolve_2d_nagative_mass(pi_dot_E)
   use global_variables_2d
   implicit none
   real(8),intent(in) :: pi_dot_E
-  real(8),parameter :: Ecut = 4.5d0/ev, dE = eps_g - Ecut
+  real(8),parameter :: Ecut = 0d0/ev, dE = eps_g - Ecut
   real(8) :: lambda_v,lambda_c,theta_p,theta_m,eps_p,eps_m
   real(8) :: alpha,ss
   complex(8) :: zx,zy

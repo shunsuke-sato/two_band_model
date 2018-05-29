@@ -16,17 +16,54 @@ subroutine preparation_2d
   zCt = 0d0; zCt(1,:,:) = 1d0
   deps = 0d0
 
-  dkx = kx_max/dble(NKx)
-  dky = ky_max/dble(NKy)
+  select case(nband_type)
+  case(N_PARABOLIC_BAND)
 
-  do ikx = -NKx,NKx
-    kx0(ikx) = dkx*dble(ikx)
-  end do
+    dkx = kx_max/dble(NKx)
+    dky = ky_max/dble(NKy)
+
+    do ikx = -NKx,NKx
+      kx0(ikx) = dkx*dble(ikx)
+    end do
+
+    do iky = -NKy,NKy
+      ky0(iky) = dky*dble(iky)
+    end do
+
+  case(N_COS_BAND, N_COS4_BAND)
+
+    dkx = kx_max/dble(2*NKx+2)
+    dky = ky_max/dble(2*NKy+2)
+
+    do ikx = -NKx,NKx
+      kx0(ikx) = dkx*dble(ikx)
+    end do
+
+
+    do iky = -NKy,NKy
+      ky0(iky) = dky*dble(iky)
+    end do
+
+  case(N_HBN_BAND)
+
+    dkx = kx_max/dble(2*NKx+2)
+    dky = ky_max/dble(NKy)
+
+    do ikx = -NKx,NKx
+      kx0(ikx) = dkx*dble(ikx)
+    end do
+
+    do iky = -NKy,NKy
+      ky0(iky) = dky*dble(iky)
+    end do
+    
+
+  case default
+    write(*,"(A,2x,A)")"Invalid nband_type",nband_type
+    stop
+  end select
+
   kx = kx0
-
-  do iky = -NKy,NKy
-    ky0(iky) = dky*dble(iky)
-  end do
   ky = ky0
 
   call set_deps_2d

@@ -47,7 +47,7 @@ subroutine current_2d_negative_mass(jxyz_intra,jxyz_inter)
   implicit none
   real(8),intent(out) :: jxyz_intra(3),jxyz_inter(3)
   real(8),parameter :: ss = 1d0/(2d0*pi)**2
-  real(8),parameter :: Ecut = 4.5d0/ev, dE = eps_g - Ecut
+  real(8),parameter :: Ecut = 0d0/ev, dE = eps_g - Ecut
   real(8) :: vk_xy(2,-NKx:NKx,-NKy:NKy)
   real(8) :: weight(-NKx:NKx,-NKy:NKy)
   real(8) :: tmp,jx,jy

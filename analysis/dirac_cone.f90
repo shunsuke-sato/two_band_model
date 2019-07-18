@@ -467,5 +467,59 @@ subroutine current(jxy,it)
 
 end subroutine current
 !----------------------------------------------------------------------------------------!
+subroutine calc_excited_elec
+  use global_variables
+  implicit none
+  integer :: ikx,iky
+  real(8) :: kxt, kyt, theta
+  complex(8) :: zs, zpsi_t(2,2)
+  real(8) :: nex(2,nkx,nky)
+
+  if(delta_gap == 0d0)then ! Dirac cone
+    do ikx = 1, nkx
+      kxt = kx(ikx)
+      do iky = 1,nky
+        kyt = ky(iky)
+
+        zs = tau_z*kxt+zI*kyt
+        if(zs /= 0d0)then
+          theta = -aimag(log(-zs))
+        else
+          theta = 0d0
+        end if
+
+        zpsi_t(1,1) = exp(zI*theta)/sqrt(2d0)
+        zpsi_t(2,1) = 1d0/sqrt(2d0)
+        
+        zpsi_t(1,2) = exp(zI*(theta+pi))/sqrt(2d0)
+        zpsi_t(2,2) = 1d0/sqrt(2d0)
+
+        nex(1,ikx,iky)=occ(1,ikx,iky)*sum(abs(conjg(zpsi_t(:,1))*zpsi(:,1,ikx,iky))**2) &
+                      +occ(2,ikx,iky)*sum(abs(conjg(zpsi_t(:,1))*zpsi(:,2,ikx,iky))**2)
+
+        nex(2,ikx,iky)=occ(1,ikx,iky)*sum(abs(conjg(zpsi_t(:,2))*zpsi(:,1,ikx,iky))**2) &
+                      +occ(2,ikx,iky)*sum(abs(conjg(zpsi_t(:,2))*zpsi(:,2,ikx,iky))**2)
+
+        
+        
+      end do
+    end do
+  else
+    stop 'Kane band is not implemented yet.'
+  end if
+
+  open(20,file="excited_elec.out")
+  do ikx = 1, nkx
+     do iky = 1,nky
+        write(20,"(999e26.16e3)")kx(ikx),ky(iky),nex(:,ikx,iky)-occ(:,ikx,iky)
+     end do
+     write(20,*)
+  end do
+
+  
+  close(20)
+
+  
+end subroutine calc_excited_elec
 !----------------------------------------------------------------------------------------!
 !----------------------------------------------------------------------------------------!

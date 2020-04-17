@@ -51,8 +51,8 @@ module global_variables
   character(20) :: envelope_1,envelope_2
 
 ! Laser parameters
-  real(8) :: E0_1,omega_1,tpulse_1,omega_ev_1,tpulse_fs_1,Iwcm2_1,CEP_2pi_1
-  real(8) :: E0_2,omega_2,tpulse_2,omega_ev_2,tpulse_fs_2,Iwcm2_2,CEP_2pi_2
+  real(8) :: E0_1,E0_1_V_m,omega_1,tpulse_1,omega_ev_1,tpulse_fs_1,Iwcm2_1,CEP_2pi_1
+  real(8) :: E0_2,E0_2_V_m,omega_2,tpulse_2,omega_ev_2,tpulse_fs_2,Iwcm2_2,CEP_2pi_2
   real(8) :: Tdelay_fs,Tdelay
 
 !! pure intraband field

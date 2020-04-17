@@ -14,10 +14,12 @@ subroutine input_Ac
   allocate(Act(-1:Nt+2),jtz(0:Nt+1),jtz_intra(0:Nt+1),jtz_inter(0:Nt+1))
   allocate(Act_pump(-1:Nt+2),Act_probe(-1:Nt+2) )
 
-  E0_1=5.338d-9*sqrt(Iwcm2_1)
+!  E0_1=5.338d-9*sqrt(Iwcm2_1)
+  E0_1=E0_1_V_m*a_B*1d-10/(2d0*Ry)
   omega_1 = omega_ev_1/(2d0*Ry)
   tpulse_1 = tpulse_fs_1/0.02418d0
-  E0_2=5.338d-9*sqrt(Iwcm2_2)
+!  E0_2=5.338d-9*sqrt(Iwcm2_2)
+  E0_2=E0_2_V_m*a_B*1d-10/(2d0*Ry)
   omega_2 = omega_ev_2/(2d0*Ry)
   tpulse_2 = tpulse_fs_2/0.02418d0
   Tdelay = Tdelay_fs/0.02418d0

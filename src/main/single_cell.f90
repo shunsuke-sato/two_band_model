@@ -19,9 +19,9 @@ subroutine single_cell
   read(*,*)NKr, NKz
   read(*,*)Nt,dt
   read(*,*)envelope_1
-  read(*,*)Iwcm2_1,omega_ev_1,tpulse_fs_1,CEP_2pi_1
+  read(*,*)E0_1_V_m,omega_ev_1,tpulse_fs_1,CEP_2pi_1
   read(*,*)envelope_2
-  read(*,*)Iwcm2_2,omega_ev_2,tpulse_fs_2,CEP_2pi_2
+  read(*,*)E0_2_V_m,omega_ev_2,tpulse_fs_2,CEP_2pi_2
   read(*,*)Tdelay_fs
   read(*,*)E0_static_V_AA
 

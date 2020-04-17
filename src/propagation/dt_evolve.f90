@@ -29,6 +29,11 @@ subroutine dt_evolve(it)
     write(*,"(A,2x,A)")"Invalid npump_probe_type",npump_probe_type
   end select
 
+  if(if_pure_intraband_fields_exist)then
+    Act_t1 = Act_t1 + Act_intra(it)
+    Act_t2 = Act_t2 + Act_intra(it+1)
+  end if
+
 
 !$omp parallel do private(ikz)
   do ikz = -NKz,NKz

@@ -55,6 +55,12 @@ module global_variables
   real(8) :: E0_2,omega_2,tpulse_2,omega_ev_2,tpulse_fs_2,Iwcm2_2,CEP_2pi_2
   real(8) :: Tdelay_fs,Tdelay
 
+!! pure intraband field
+  logical :: if_pure_intraband_fields_exist = .false.
+  real(8),allocatable :: Act_intra(:)
+  real(8) :: E0_static, T_duration_static
+  real(8) :: E0_static_V_AA
+
 
 
 end module global_variables

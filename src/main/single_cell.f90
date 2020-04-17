@@ -23,6 +23,7 @@ subroutine single_cell
   read(*,*)envelope_2
   read(*,*)Iwcm2_2,omega_ev_2,tpulse_fs_2,CEP_2pi_2
   read(*,*)Tdelay_fs
+  read(*,*)E0_static_V_AA
 
   call preparation
   call input_Ac

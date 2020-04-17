@@ -113,6 +113,34 @@ subroutine input_Ac
 
   Act = Act_pump + Act_probe
 
+  if(if_pure_intraband_fields_exist)then
+    call input_Ac_intra
+  end if
 
   return
+
+  contains
+    subroutine input_Ac_intra
+      use global_variables
+      implicit none
+      integer :: it
+      real(8) :: tt, xx
+
+      E0_static = E0_static_V_AA*a_B/ev
+      T_duration_static = tpulse_1
+
+      allocate(Act_intra(-1:Nt+2))
+
+     
+      do it = -1, Nt+2
+        tt = dt*dble(it)
+        xx = tt - 0.5d0*T_duration_static
+        Act_intra(it) = -E0_static*xx
+      end do
+
+
+
+    end subroutine input_Ac_intra
+
 end subroutine input_Ac
+!--------------------------------------------------------------------------------

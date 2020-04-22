@@ -32,7 +32,12 @@ subroutine single_cell
   open(22,file="nex_k.out")
   allocate(nex0th_kz(-NKz:NKz),nex1st_kz(-NKz:NKz),nex2nd_kz(-NKz:NKz))
 
-  if(if_add_impulsive) call add_impulsive_distortion
+  if(if_add_impulsive)then
+    call add_impulsive_distortion
+    call current(jz_intra,jz_inter)
+    jtz_intra(0) = jz_intra; jtz_inter(0) = jz_inter
+    jtz(0) = jtz_intra(0) + jtz_inter(0)
+  end if
 
   do it = 0,Nt
     write(*,*)'it=',it,'/',Nt

@@ -32,6 +32,8 @@ subroutine single_cell
   open(22,file="nex_k.out")
   allocate(nex0th_kz(-NKz:NKz),nex1st_kz(-NKz:NKz),nex2nd_kz(-NKz:NKz))
 
+  if(if_add_impulsive) call add_impulsive_distortion
+
   do it = 0,Nt
     write(*,*)'it=',it,'/',Nt
     call dt_evolve(it)

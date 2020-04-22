@@ -55,6 +55,10 @@ module global_variables
   real(8) :: E0_2,E0_2_V_m,omega_2,tpulse_2,omega_ev_2,tpulse_fs_2,Iwcm2_2,CEP_2pi_2
   real(8) :: Tdelay_fs,Tdelay
 
+! impulsive
+  real(8),parameter :: kick_impulsive = 1d-4
+  logical,parameter :: if_add_impulsive = .false.
+
 !! pure intraband field
   logical,parameter :: if_pure_intraband_fields_exist = .true.
   real(8),allocatable :: Act_intra(:)

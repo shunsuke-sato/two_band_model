@@ -130,6 +130,8 @@ subroutine input_Ac
 
       E0_static = E0_static_V_AA*a_B/ev
       T_duration_static = tpulse_1
+      if(if_add_impulsive)T_duration_static=0d0
+
 
       allocate(Act_intra(-1:Nt+2))
 

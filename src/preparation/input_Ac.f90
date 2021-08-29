@@ -14,10 +14,12 @@ subroutine input_Ac
   allocate(Act(-1:Nt+2),jtz(0:Nt+1),jtz_intra(0:Nt+1),jtz_inter(0:Nt+1))
   allocate(Act_pump(-1:Nt+2),Act_probe(-1:Nt+2) )
 
-  E0_1=5.338d-9*sqrt(Iwcm2_1)
+!  E0_1=5.338d-9*sqrt(Iwcm2_1)
+  E0_1=E0_1_V_m*a_B*1d-10/(2d0*Ry)
   omega_1 = omega_ev_1/(2d0*Ry)
   tpulse_1 = tpulse_fs_1/0.02418d0
-  E0_2=5.338d-9*sqrt(Iwcm2_2)
+!  E0_2=5.338d-9*sqrt(Iwcm2_2)
+  E0_2=E0_2_V_m*a_B*1d-10/(2d0*Ry)
   omega_2 = omega_ev_2/(2d0*Ry)
   tpulse_2 = tpulse_fs_2/0.02418d0
   Tdelay = Tdelay_fs/0.02418d0
@@ -113,6 +115,36 @@ subroutine input_Ac
 
   Act = Act_pump + Act_probe
 
+  if(if_pure_intraband_fields_exist)then
+    call input_Ac_intra
+  end if
 
   return
+
+  contains
+    subroutine input_Ac_intra
+      use global_variables
+      implicit none
+      integer :: it
+      real(8) :: tt, xx
+
+      E0_static = E0_static_V_AA*a_B/ev
+      T_duration_static = tpulse_1
+      if(if_add_impulsive)T_duration_static=0d0
+
+
+      allocate(Act_intra(-1:Nt+2))
+
+     
+      do it = -1, Nt+2
+        tt = dt*dble(it)
+        xx = tt - 0.5d0*T_duration_static
+        Act_intra(it) = -E0_static*xx
+      end do
+
+
+
+    end subroutine input_Ac_intra
+
 end subroutine input_Ac
+!--------------------------------------------------------------------------------

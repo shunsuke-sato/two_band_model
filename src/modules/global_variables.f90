@@ -28,10 +28,10 @@ module global_variables
   integer :: NKr,NKz, NKx, NKy
   real(8) :: kr_max,kz_max,dkr,dkz, kx_max, ky_max, dkx,dky
   real(8),allocatable :: kr(:),kz0(:),kz(:),kx0(:),ky0(:),kx(:),ky(:)
-  real(8),parameter :: eps_g = 12.1d0/(2d0*Ry)  !1.52d0/(2d0*Ry) 
+  real(8),parameter :: eps_g = 9.0d0/(2d0*Ry)  !1.52d0/(2d0*Ry) 
   real(8),parameter :: mass_r = 0.4d0 !1d0/(1d0/0.57d0+1d0/0.067d0)
-  real(8),parameter :: piz_vc = 0d0 !0.5d0*sqrt(eps_g/mass_r)
-  real(8),parameter :: pix_vc = 0.35d0
+  real(8),parameter :: piz_vc = 0.5d0*sqrt(eps_g/mass_r)
+  real(8),parameter :: pix_vc = 0d0 
   real(8),parameter :: piy_vc = 0d0
   real(8),parameter :: fact_intra = 1d0
   integer,parameter :: nband_type = N_PARABOLIC_BAND !N_NONPARABOLIC_BAND
@@ -51,9 +51,19 @@ module global_variables
   character(20) :: envelope_1,envelope_2
 
 ! Laser parameters
-  real(8) :: E0_1,omega_1,tpulse_1,omega_ev_1,tpulse_fs_1,Iwcm2_1,CEP_2pi_1
-  real(8) :: E0_2,omega_2,tpulse_2,omega_ev_2,tpulse_fs_2,Iwcm2_2,CEP_2pi_2
+  real(8) :: E0_1,E0_1_V_m,omega_1,tpulse_1,omega_ev_1,tpulse_fs_1,Iwcm2_1,CEP_2pi_1
+  real(8) :: E0_2,E0_2_V_m,omega_2,tpulse_2,omega_ev_2,tpulse_fs_2,Iwcm2_2,CEP_2pi_2
   real(8) :: Tdelay_fs,Tdelay
+
+! impulsive
+  real(8),parameter :: kick_impulsive = 1d-4
+  logical,parameter :: if_add_impulsive = .false.
+
+!! pure intraband field
+  logical,parameter :: if_pure_intraband_fields_exist = .true.
+  real(8),allocatable :: Act_intra(:)
+  real(8) :: E0_static, T_duration_static
+  real(8) :: E0_static_V_AA
 
 
 

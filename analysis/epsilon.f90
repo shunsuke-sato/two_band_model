@@ -8,12 +8,15 @@ program main
   real(8) :: dt,ww,xx,ff
   integer :: it,iw
   complex(8) :: zAw,zEw,zJw,zsigma,zeps
+  real(8) :: kick_impulsive
 
+  kick_impulsive = 1d-4
 
   do it = 0,Nt
     read(*,*)tt(it),Act(it),jt(it)
   end do
   dt = tt(1) - tt(0)
+  jt(0) = jt(0)*0.5d0
 
   open(21,file="zeps.out")
   do iw = 0,Nw
@@ -25,9 +28,10 @@ program main
       zAw = zAw + exp(zI*ww*tt(it)) *Act(it)
       zjw = zjw + exp(zI*ww*tt(it)) *jt(it)*ff
     end do
-    zEw = -(-zI*ww)*zAw
-    zJw = - zJw
-    zsigma = zJw/zEw
+    zEw = -(-zI*ww)*zAw*dt
+    zJw = - zJw*dt
+!    zsigma = zJw/zEw
+    zsigma = zJw/kick_impulsive
     zeps = 1d0 + 4d0*pi*zi*zsigma/ww
 
     write(21,"(999e26.16e3)")ww,zeps,zsigma

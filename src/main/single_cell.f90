@@ -19,10 +19,11 @@ subroutine single_cell
   read(*,*)NKr, NKz
   read(*,*)Nt,dt
   read(*,*)envelope_1
-  read(*,*)Iwcm2_1,omega_ev_1,tpulse_fs_1,CEP_2pi_1
+  read(*,*)E0_1_V_m,omega_ev_1,tpulse_fs_1,CEP_2pi_1
   read(*,*)envelope_2
-  read(*,*)Iwcm2_2,omega_ev_2,tpulse_fs_2,CEP_2pi_2
+  read(*,*)E0_2_V_m,omega_ev_2,tpulse_fs_2,CEP_2pi_2
   read(*,*)Tdelay_fs
+  read(*,*)E0_static_V_AA
 
   call preparation
   call input_Ac
@@ -30,6 +31,13 @@ subroutine single_cell
   open(21,file="Eex_nex.out")
   open(22,file="nex_k.out")
   allocate(nex0th_kz(-NKz:NKz),nex1st_kz(-NKz:NKz),nex2nd_kz(-NKz:NKz))
+
+  if(if_add_impulsive)then
+    call add_impulsive_distortion
+    call current(jz_intra,jz_inter)
+    jtz_intra(0) = jz_intra; jtz_inter(0) = jz_inter
+    jtz(0) = jtz_intra(0) + jtz_inter(0)
+  end if
 
   do it = 0,Nt
     write(*,*)'it=',it,'/',Nt

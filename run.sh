@@ -6,23 +6,24 @@
 #SBATCH -D ./
 # Job Name:
 #SBATCH -J test_slurm
-# Queue (Partition):
-#SBATCH --partition=general,short,express,mpsd
+#
 # Number of nodes and MPI tasks per node:
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 # for OpenMP:
-#SBATCH --cpus-per-task=32
+#SBATCH --cpus-per-task=40
 #
 #SBATCH --mail-type=none
-#SBATCH --mail-user=<userid>@rzg.mpg.de
+#SBATCH --mail-user=userid@example.mpg.de
 #
 # Wall clock limit:
 #SBATCH --time=00:30:00
 
-export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
-# For pinning threads correctly:
-export OMP_PLACES=cores 
+# Load compiler and MPI modules with explicit version specifications,
+# consistently with the versions used to build the executable.
+module purge
+module load intel/21.2.0 impi/2021.2
 
 # Run the program:
-srun ./build_dir/panda <inp_sc > log.log
+srun ./build_dir/panda < inp_sc >log.log
+
